@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        
+        /* Copy the exact CSS from login.html */
+        .otp-container {
+            margin-top: 1rem;
+        }
+        
+        .otp-inputs {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .otp-input {
+            width: 3rem;
+            height: 3rem;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .otp-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+        
+        .otp-timer-section {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .timer-display {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+        
+        #timer-countdown {
+            font-weight: 600;
+            color: #ef4444;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin: 10px 0;
+        }
+        
+        .btn-primary:hover {
+            background-color: #374151;
+        }
+        
+        .btn-secondary {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background-color: transparent;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 10px 0;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #000;
+            color: white;
+        }
+        
+        .debug-info {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .debug-info h4 {
+            margin-top: 0;
+            color: #0369a1;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 OTP Debug Test</h1>
+        
+        <div class="debug-info">
+            <h4>Debug Information:</h4>
+            <p><strong>Purpose:</strong> Test OTP input visibility and functionality</p>
+            <p><strong>CSS Source:</strong> Copied directly from login.html</p>
+            <p><strong>Expected:</strong> 4 visible OTP input boxes with proper styling</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test 1: Basic OTP Inputs (Always Visible)</h3>
+            <div class="otp-container">
+                <div class="otp-inputs">
+                    <input type="text" class="otp-input" id="otp-1" maxlength="1" />
+                    <input type="text" class="otp-input" id="otp-2" maxlength="1" />
+                    <input type="text" class="otp-input" id="otp-3" maxlength="1" />
+                    <input type="text" class="otp-input" id="otp-4" maxlength="1" />
+                </div>
+            </div>
+            <p><strong>Status:</strong> <span id="test1-status">Testing...</span></p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test 2: OTP Form with Timer (Toggle Visibility)</h3>
+            <form id="otp-form" style="display: none;">
+                <div class="heading5 mb-4">Verify Reset Code</div>
+                <p class="text-sm text-gray-600 mb-4">We've sent a 4-digit code to your email. Please enter it below.</p>
+                
+                <div class="otp-container">
+                    <div class="otp-inputs">
+                        <input type="text" class="otp-input" id="otp-form-1" maxlength="1" />
+                        <input type="text" class="otp-input" id="otp-form-2" maxlength="1" />
+                        <input type="text" class="otp-input" id="otp-form-3" maxlength="1" />
+                        <input type="text" class="otp-input" id="otp-form-4" maxlength="1" />
+                    </div>
+                    
+                    <div class="otp-timer-section">
+                        <div id="timer-display" class="timer-display">
+                            <span id="timer-text">Resend code in </span>
+                            <span id="timer-countdown">60</span>
+                            <span> seconds</span>
+                        </div>
+                        <button type="button" id="resend-otp-btn" class="btn-secondary" style="display: none;">
+                            Resend Code
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary">Verify Code</button>
+                <button type="button" class="btn-secondary" onclick="toggleForm()">Toggle Form</button>
+            </form>
+            <p><strong>Status:</strong> <span id="test2-status">Form hidden by default</span></p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test 3: CSS Debug</h3>
+            <div id="css-debug"></div>
+            <button class="btn-secondary" onclick="checkCSS()">Check CSS Properties</button>
+        </div>
+        
+        <div id="status" class="status success" style="display: none;"></div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn-primary" onclick="showForm()">Show OTP Form</button>
+            <button class="btn-primary" onclick="hideForm()">Hide OTP Form</button>
+            <button class="btn-primary" onclick="startTimer()">Start Timer</button>
+        </div>
+    </div>
+
+    <script>
+        const otpInputs = document.querySelectorAll('.otp-input');
+        let otpTimer = null;
+        let otpTimeLeft = 60;
+        
+        // Check if OTP inputs are visible
+        function checkOTPVisibility() {
+            const test1Status = document.getElementById('test1-status');
+            const visibleInputs = Array.from(otpInputs).filter(input => {
+                const rect = input.getBoundingClientRect();
+                return rect.width > 0 && rect.height > 0;
+            });
+            
+            if (visibleInputs.length === 4) {
+                test1Status.textContent = '✅ All 4 OTP inputs are visible';
+                test1Status.style.color = 'green';
+            } else {
+                test1Status.textContent = `❌ Only ${visibleInputs.length}/4 OTP inputs are visible`;
+                test1Status.style.color = 'red';
+            }
+            
+            return visibleInputs.length === 4;
+        }
+        
+        // Check CSS properties
+        function checkCSS() {
+            const cssDebug = document.getElementById('css-debug');
+            const firstInput = otpInputs[0];
+            const styles = window.getComputedStyle(firstInput);
+            
+            cssDebug.innerHTML = `
+                <h4>CSS Properties for First OTP Input:</h4>
+                <p><strong>Display:</strong> ${styles.display}</p>
+                <p><strong>Visibility:</strong> ${styles.visibility}</p>
+                <p><strong>Width:</strong> ${styles.width}</p>
+                <p><strong>Height:</strong> ${styles.height}</p>
+                <p><strong>Opacity:</strong> ${styles.opacity}</p>
+                <p><strong>Position:</strong> ${styles.position}</p>
+                <p><strong>Z-index:</strong> ${styles.zIndex}</p>
+                <p><strong>Border:</strong> ${styles.border}</p>
+                <p><strong>Background:</strong> ${styles.backgroundColor}</p>
+            `;
+        }
+        
+        // Show/Hide OTP form
+        function showForm() {
+            document.getElementById('otp-form').style.display = 'block';
+            document.getElementById('test2-status').textContent = 'Form is now visible';
+            checkOTPVisibility();
+        }
+        
+        function hideForm() {
+            document.getElementById('otp-form').style.display = 'none';
+            document.getElementById('test2-status').textContent = 'Form is now hidden';
+        }
+        
+        function toggleForm() {
+            const form = document.getElementById('otp-form');
+            if (form.style.display === 'none') {
+                showForm();
+            } else {
+                hideForm();
+            }
+        }
+        
+        // Timer functionality
+        function startTimer() {
+            otpTimeLeft = 60;
+            updateTimerDisplay();
+            
+            document.getElementById('resend-otp-btn').style.display = 'none';
+            document.getElementById('timer-display').style.display = 'block';
+            
+            if (otpTimer) {
+                clearInterval(otpTimer);
+            }
+            
+            otpTimer = setInterval(() => {
+                otpTimeLeft--;
+                updateTimerDisplay();
+                
+                if (otpTimeLeft <= 0) {
+                    clearInterval(otpTimer);
+                    showResendButton();
+                }
+            }, 1000);
+            
+            showStatus('Timer started! Countdown from 60 seconds...', 'success');
+        }
+        
+        function updateTimerDisplay() {
+            const timerDisplay = document.getElementById('timer-display');
+            const countdown = document.getElementById('timer-countdown');
+            
+            if (otpTimeLeft > 0) {
+                countdown.textContent = otpTimeLeft;
+                timerDisplay.style.display = 'block';
+            } else {
+                timerDisplay.style.display = 'none';
+            }
+        }
+        
+        function showResendButton() {
+            document.getElementById('resend-otp-btn').style.display = 'inline-block';
+            document.getElementById('timer-display').style.display = 'none';
+            showStatus('Timer expired! Resend button is now available.', 'success');
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Initialize OTP input handling
+        function initializeOTPInputs() {
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    
+                    if (!/^\d$/.test(value)) {
+                        input.value = '';
+                        return;
+                    }
+                    
+                    if (value.length === 1 && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
+            });
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeOTPInputs();
+            checkOTPVisibility();
+            checkCSS();
+            showStatus('Debug page loaded! Check the status above.', 'success');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Simple Test - Indian Tribe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .otp-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .otp-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .timer-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .timer-display {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        #timer-countdown {
+            font-weight: bold;
+            color: #ef4444;
+        }
+        
+        .resend-btn {
+            background: #10b981;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .resend-btn:hover {
+            background: #059669;
+        }
+        
+        .test-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-btn:hover {
+            background: #2563eb;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 OTP Functionality Test</h1>
+        
+        <div class="otp-inputs">
+            <input type="text" class="otp-input" maxlength="1" placeholder="0">
+            <input type="text" class="otp-input" maxlength="1" placeholder="0">
+            <input type="text" class="otp-input" maxlength="1" placeholder="0">
+            <input type="text" class="otp-input" maxlength="1" placeholder="0">
+        </div>
+        
+        <div class="timer-section">
+            <div id="timer-display" class="timer-display">
+                <span id="timer-text">Resend code in </span>
+                <span id="timer-countdown">60</span>
+                <span> seconds</span>
+            </div>
+            <button type="button" id="resend-otp-btn" class="resend-btn">
+                Resend Code
+            </button>
+        </div>
+        
+        <div id="status" class="status info" style="display: none;"></div>
+        
+        <div style="text-align: center;">
+            <button class="test-btn" onclick="startTimer()">Start Timer</button>
+            <button class="test-btn" onclick="resetInputs()">Reset Inputs</button>
+            <button class="test-btn" onclick="clearTimer()">Clear Timer</button>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 8px;">
+            <h3>Test Instructions:</h3>
+            <ol>
+                <li>Click "Start Timer" to begin 60-second countdown</li>
+                <li>Type numbers in OTP inputs - they should auto-focus to next field</li>
+                <li>Watch timer count down from 60 to 0</li>
+                <li>After timer expires, "Resend Code" button appears</li>
+                <li>Use "Reset Inputs" to clear all fields</li>
+                <li>Use "Clear Timer" to stop the countdown</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const otpInputs = document.querySelectorAll('.otp-input');
+        let otpTimer = null;
+        let otpTimeLeft = 60;
+        
+        // Initialize OTP input handling
+        function initializeOTPInputs() {
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    
+                    // Only allow numbers
+                    if (!/^\d$/.test(value)) {
+                        input.value = '';
+                        return;
+                    }
+                    
+                    // Move to next input if value is entered
+                    if (value.length === 1 && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                    
+                    // Check if all inputs are filled
+                    checkOTPComplete();
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
+            });
+        }
+        
+        // Check if OTP is complete
+        function checkOTPComplete() {
+            const isComplete = Array.from(otpInputs).every(input => input.value.length === 1);
+            const statusDiv = document.getElementById('status');
+            
+            if (isComplete) {
+                const otpCode = Array.from(otpInputs).map(input => input.value).join('');
+                statusDiv.textContent = `OTP Code Entered: ${otpCode}`;
+                statusDiv.className = 'status success';
+                statusDiv.style.display = 'block';
+            } else {
+                statusDiv.style.display = 'none';
+            }
+        }
+        
+        // Start OTP timer
+        function startTimer() {
+            otpTimeLeft = 60;
+            updateTimerDisplay();
+            
+            // Hide resend button initially
+            document.getElementById('resend-otp-btn').style.display = 'none';
+            document.getElementById('timer-display').style.display = 'block';
+            
+            // Clear any existing timer
+            if (otpTimer) {
+                clearInterval(otpTimer);
+            }
+            
+            otpTimer = setInterval(() => {
+                otpTimeLeft--;
+                updateTimerDisplay();
+                
+                if (otpTimeLeft <= 0) {
+                    clearInterval(otpTimer);
+                    showResendButton();
+                }
+            }, 1000);
+            
+            showStatus('Timer started! Countdown from 60 seconds...', 'info');
+        }
+        
+        // Update timer display
+        function updateTimerDisplay() {
+            const timerDisplay = document.getElementById('timer-display');
+            const countdown = document.getElementById('timer-countdown');
+            
+            if (otpTimeLeft > 0) {
+                countdown.textContent = otpTimeLeft;
+                timerDisplay.style.display = 'block';
+            } else {
+                timerDisplay.style.display = 'none';
+            }
+        }
+        
+        // Show resend button
+        function showResendButton() {
+            document.getElementById('resend-otp-btn').style.display = 'inline-block';
+            document.getElementById('timer-display').style.display = 'none';
+            showStatus('Timer expired! Resend button is now available.', 'success');
+        }
+        
+        // Reset OTP inputs
+        function resetInputs() {
+            otpInputs.forEach(input => {
+                input.value = '';
+            });
+            otpInputs[0].focus();
+            document.getElementById('status').style.display = 'none';
+            showStatus('OTP inputs cleared!', 'info');
+        }
+        
+        // Clear OTP timer
+        function clearTimer() {
+            if (otpTimer) {
+                clearInterval(otpTimer);
+                otpTimer = null;
+            }
+            otpTimeLeft = 60;
+            updateTimerDisplay();
+            document.getElementById('resend-otp-btn').style.display = 'none';
+            document.getElementById('timer-display').style.display = 'block';
+            showStatus('Timer cleared!', 'info');
+        }
+        
+        // Show status message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Handle resend button click
+        document.getElementById('resend-otp-btn').addEventListener('click', function() {
+            showStatus('Resend button clicked! Starting new timer...', 'success');
+            startTimer();
+        });
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeOTPInputs();
+            showStatus('OTP test page loaded! Click "Start Timer" to begin testing.', 'info');
+        });
+    </script>
+</body>
+</html>

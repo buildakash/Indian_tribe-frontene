@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Input Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .test-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phone Input Restrictions Test</h1>
+    
+    <div class="test-info">
+        <h3>Test Cases:</h3>
+        <ul>
+            <li>Try typing letters - should be blocked</li>
+            <li>Try typing symbols - should be blocked</li>
+            <li>Try typing more than 10 digits - should be limited</li>
+            <li>Try pasting text with letters/symbols - should be filtered</li>
+            <li>Navigation keys (arrows, backspace, delete) should work</li>
+            <li>Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X should work</li>
+        </ul>
+    </div>
+
+    <div class="form-group">
+        <label for="phone">Phone Number (10 digits max):</label>
+        <input type="tel" id="phone" placeholder="Enter phone number" maxlength="10">
+    </div>
+
+    <div class="form-group">
+        <label for="result">Current Value:</label>
+        <input type="text" id="result" readonly>
+    </div>
+
+    <script>
+        const phoneInput = document.getElementById('phone');
+        const resultInput = document.getElementById('result');
+
+        // Update result display
+        function updateResult() {
+            resultInput.value = phoneInput.value;
+        }
+
+        // Handle input event - filter non-digits and limit length
+        phoneInput.addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, ''); // Remove all non-digits
+            
+            // Limit to 10 digits
+            if (value.length > 10) {
+                value = value.substring(0, 10);
+            }
+            
+            // Update input value
+            this.value = value;
+            updateResult();
+        });
+
+        // Handle keydown event - prevent non-numeric keys
+        phoneInput.addEventListener('keydown', function(e) {
+            // Allow: backspace, delete, tab, escape, enter, and navigation keys
+            if ([8, 9, 27, 13, 46, 37, 39, 38, 40].indexOf(e.keyCode) !== -1 ||
+                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true)) {
+                return;
+            }
+            
+            // Allow only numbers (0-9)
+            if (e.keyCode >= 48 && e.keyCode <= 57) {
+                // Check if we're already at 10 digits
+                if (this.value.replace(/\D/g, '').length >= 10) {
+                    e.preventDefault();
+                    return;
+                }
+                return;
+            }
+            
+            // Prevent all other keys
+            e.preventDefault();
+        });
+
+        // Initial update
+        updateResult();
+    </script>
+</body>
+</html>

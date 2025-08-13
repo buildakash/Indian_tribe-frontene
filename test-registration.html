@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registration API Test</h1>
+        <p>This page tests the registration API endpoints to ensure they're working correctly.</p>
+        
+        <h2>Test Registration (Send OTP)</h2>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" value="Test User" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" value="9876543210" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="TestPass123!" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" value="TestPass123!" required>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="agreed_terms" checked> I agree to terms
+                </label>
+            </div>
+            
+            <button type="submit">Send Registration OTP</button>
+        </form>
+        
+        <div id="registrationResponse" class="response" style="display: none;"></div>
+        
+        <hr style="margin: 40px 0;">
+        
+        <h2>Test OTP Verification</h2>
+        <form id="otpForm">
+            <div class="form-group">
+                <label for="otpEmail">Email:</label>
+                <input type="email" id="otpEmail" name="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="otp">OTP Code:</label>
+                <input type="text" id="otp" name="otp" placeholder="Enter 6-digit OTP" maxlength="6" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="otpName">Name:</label>
+                <input type="text" id="otpName" name="name" value="Test User" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="otpPhone">Phone:</label>
+                <input type="tel" id="otpPhone" name="phone" value="9876543210" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="otpPassword">Password:</label>
+                <input type="password" id="otpPassword" name="password" value="TestPass123!" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="otpConfirmPassword">Confirm Password:</label>
+                <input type="password" id="otpConfirmPassword" name="confirm_password" value="TestPass123!" required>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="otpAgreedTerms" checked> I agree to terms
+                </label>
+            </div>
+            
+            <button type="submit">Verify OTP & Complete Registration</button>
+        </form>
+        
+        <div id="otpResponse" class="response" style="display: none;"></div>
+        
+        <hr style="margin: 40px 0;">
+        
+        <h2>Test Resend OTP</h2>
+        <form id="resendForm">
+            <div class="form-group">
+                <label for="resendEmail">Email:</label>
+                <input type="email" id="resendEmail" name="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="resendName">Name:</label>
+                <input type="text" id="resendName" name="name" value="Test User" required>
+            </div>
+            
+            <button type="submit">Resend OTP</button>
+        </form>
+        
+        <div id="resendResponse" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Test Registration API
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const responseDiv = document.getElementById('registrationResponse');
+            
+            try {
+                const response = await fetch('../Backend _php/routes/auth/register.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                responseDiv.style.display = 'block';
+                responseDiv.className = `response ${result.status === 'success' ? 'success' : 'error'}`;
+                responseDiv.textContent = JSON.stringify(result, null, 2);
+                
+            } catch (error) {
+                responseDiv.style.display = 'block';
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test OTP Verification API
+        document.getElementById('otpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const responseDiv = document.getElementById('otpResponse');
+            
+            try {
+                const response = await fetch('../Backend _php/routes/auth/verify_otp.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                responseDiv.style.display = 'block';
+                responseDiv.className = `response ${result.status === 'success' ? 'success' : 'error'}`;
+                responseDiv.textContent = JSON.stringify(result, null, 2);
+                
+            } catch (error) {
+                responseDiv.style.display = 'block';
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test Resend OTP API
+        document.getElementById('resendForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const responseDiv = document.getElementById('resendResponse');
+            
+            try {
+                const response = await fetch('../Backend _php/routes/auth/resend_otp.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                responseDiv.style.display = 'block';
+                responseDiv.className = `response ${result.status === 'success' ? 'success' : 'error'}`;
+                responseDiv.textContent = JSON.stringify(result, null, 2);
+                
+            } catch (error) {
+                responseDiv.style.display = 'block';
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

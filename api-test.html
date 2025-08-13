@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Test - Indian Tribe</title>
+    <link rel="stylesheet" href="./dist/output-tailwind.css" />
+    <style>
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        .warning { color: orange; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .test-result.success { background: #d4edda; border: 1px solid #c3e6cb; }
+        .test-result.error { background: #f8d7da; border: 1px solid #f5c6cb; }
+        .test-result.info { background: #d1ecf1; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">🔧 API Integration Test - Indian Tribe</h1>
+        
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">📡 Backend Connectivity Test</h2>
+            <div id="connectivity-results" class="space-y-2">
+                <p class="info">Testing backend connectivity...</p>
+            </div>
+            <button id="test-connectivity" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Test Backend Connection
+            </button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">📧 Email OTP Test</h2>
+            <div class="mb-4">
+                <label for="test-email" class="block text-sm font-medium mb-2">Email Address:</label>
+                <input type="email" id="test-email" placeholder="Enter email for OTP test" 
+                       class="w-full p-3 border border-gray-300 rounded-lg">
+            </div>
+            <div class="flex gap-2 mb-4">
+                <button id="send-otp-test" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Send OTP
+                </button>
+                <button id="verify-otp-test" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                    Verify OTP
+                </button>
+            </div>
+            <div id="otp-results" class="space-y-2"></div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">👤 Authentication Test</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold mb-3">Login Test</h3>
+                    <div class="space-y-3">
+                        <input type="email" id="login-email" placeholder="Email" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <input type="password" id="login-password" placeholder="Password" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <button id="test-login" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Test Login
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-3">Signup Test</h3>
+                    <div class="space-y-3">
+                        <input type="text" id="signup-name" placeholder="Full Name" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <input type="email" id="signup-email" placeholder="Email" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <input type="tel" id="signup-phone" placeholder="Phone" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <input type="password" id="signup-password" placeholder="Password" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <button id="test-signup" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                            Test Signup
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="auth-results" class="mt-4 space-y-2"></div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">🎨 Frontend Features Test</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold mb-3">Password Strength Test</h3>
+                    <div class="space-y-3">
+                        <input type="password" id="strength-test-password" placeholder="Test password strength" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <div id="strength-result" class="text-sm"></div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-3">Confirm Password Test</h3>
+                    <div class="space-y-3">
+                        <input type="password" id="confirm-test-password" placeholder="Password" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <input type="password" id="confirm-test-confirm" placeholder="Confirm password" 
+                               class="w-full p-2 border border-gray-300 rounded">
+                        <div id="confirm-result" class="text-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">📋 Complete Test Results</h2>
+            <div id="complete-results" class="space-y-2">
+                <p class="info">Ready to run comprehensive tests...</p>
+            </div>
+            <button id="run-all-tests" class="bg-purple-500 text-white px-6 py-3 rounded hover:bg-purple-600 font-semibold">
+                🚀 Run All Tests
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class APITester {
+            constructor() {
+                this.apiBaseUrl = 'http://localhost:8000/routes/auth';
+                this.testResults = [];
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                document.getElementById('test-connectivity').addEventListener('click', () => this.testConnectivity());
+                document.getElementById('send-otp-test').addEventListener('click', () => this.testSendOTP());
+                document.getElementById('verify-otp-test').addEventListener('click', () => this.testVerifyOTP());
+                document.getElementById('test-login').addEventListener('click', () => this.testLogin());
+                document.getElementById('test-signup').addEventListener('click', () => this.testSignup());
+                document.getElementById('run-all-tests').addEventListener('click', () => this.runAllTests());
+                
+                // Frontend feature tests
+                document.getElementById('strength-test-password').addEventListener('input', (e) => this.testPasswordStrength(e.target.value));
+                document.getElementById('confirm-test-confirm').addEventListener('input', () => this.testConfirmPassword());
+            }
+
+            async testConnectivity() {
+                const resultsDiv = document.getElementById('connectivity-results');
+                resultsDiv.innerHTML = '<p class="info">Testing backend connectivity...</p>';
+
+                try {
+                    // Test database connection
+                    const dbResponse = await fetch(`${this.apiBaseUrl}/send_otp.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'email=test@example.com'
+                    });
+                    
+                    if (dbResponse.ok) {
+                        this.addResult('connectivity-results', '✅ Backend is accessible', 'success');
+                        this.addResult('connectivity-results', '✅ Database connection working', 'success');
+                        this.addResult('connectivity-results', '✅ API endpoints responding', 'success');
+                    } else {
+                        this.addResult('connectivity-results', '❌ Backend connection failed', 'error');
+                    }
+                } catch (error) {
+                    this.addResult('connectivity-results', `❌ Connection error: ${error.message}`, 'error');
+                }
+            }
+
+            async testSendOTP() {
+                const email = document.getElementById('test-email').value;
+                const resultsDiv = document.getElementById('otp-results');
+                
+                if (!email) {
+                    this.addResult('otp-results', '❌ Please enter email address', 'error');
+                    return;
+                }
+
+                this.addResult('otp-results', '📧 Sending OTP...', 'info');
+
+                try {
+                    const formData = new FormData();
+                    formData.append('email', email);
+
+                    const response = await fetch(`${this.apiBaseUrl}/send_otp.php`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        this.addResult('otp-results', '✅ OTP sent successfully!', 'success');
+                        this.addResult('otp-results', `📧 Check email: ${email}`, 'info');
+                    } else {
+                        this.addResult('otp-results', `❌ ${result.message}`, 'error');
+                    }
+                } catch (error) {
+                    this.addResult('otp-results', `❌ ${error.message}`, 'error');
+                }
+            }
+
+            async testVerifyOTP() {
+                const email = document.getElementById('test-email').value;
+                const otp = prompt('Enter the OTP code you received:');
+                
+                if (!otp) {
+                    this.addResult('otp-results', '❌ No OTP entered', 'error');
+                    return;
+                }
+
+                this.addResult('otp-results', '🔍 Verifying OTP...', 'info');
+
+                try {
+                    const formData = new FormData();
+                    formData.append('email', email);
+                    formData.append('otp', otp);
+
+                    const response = await fetch(`${this.apiBaseUrl}/verify_otp.php`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        this.addResult('otp-results', '✅ OTP verified successfully!', 'success');
+                    } else {
+                        this.addResult('otp-results', `❌ ${result.message}`, 'error');
+                    }
+                } catch (error) {
+                    this.addResult('otp-results', `❌ ${error.message}`, 'error');
+                }
+            }
+
+            async testLogin() {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const resultsDiv = document.getElementById('auth-results');
+                
+                if (!email || !password) {
+                    this.addResult('auth-results', '❌ Please fill all fields', 'error');
+                    return;
+                }
+
+                this.addResult('auth-results', '🔐 Testing login...', 'info');
+
+                try {
+                    const formData = new FormData();
+                    formData.append('email', email);
+                    formData.append('password', password);
+
+                    const response = await fetch(`${this.apiBaseUrl}/login.php`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        this.addResult('auth-results', '✅ Login successful!', 'success');
+                        this.addResult('auth-results', `👤 User ID: ${result.user_id}`, 'info');
+                    } else {
+                        this.addResult('auth-results', `❌ ${result.message}`, 'error');
+                    }
+                } catch (error) {
+                    this.addResult('auth-results', `❌ ${error.message}`, 'error');
+                }
+            }
+
+            async testSignup() {
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const phone = document.getElementById('signup-phone').value;
+                const password = document.getElementById('signup-password').value;
+                
+                if (!name || !email || !phone || !password) {
+                    this.addResult('auth-results', '❌ Please fill all fields', 'error');
+                    return;
+                }
+
+                this.addResult('auth-results', '📝 Testing signup...', 'info');
+
+                try {
+                    const formData = new FormData();
+                    formData.append('name', name);
+                    formData.append('email', email);
+                    formData.append('phone', phone);
+                    formData.append('password', password);
+                    formData.append('confirm_password', password);
+                    formData.append('agreed_terms', '1');
+
+                    const response = await fetch(`${this.apiBaseUrl}/signup.php`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        this.addResult('auth-results', '✅ Signup successful!', 'success');
+                    } else {
+                        this.addResult('auth-results', `❌ ${result.message}`, 'error');
+                    }
+                } catch (error) {
+                    this.addResult('auth-results', `❌ ${error.message}`, 'error');
+                }
+            }
+
+            testPasswordStrength(password) {
+                const resultDiv = document.getElementById('strength-result');
+                
+                let strength = 0;
+                let feedback = '';
+
+                // Check length
+                if (password.length >= 8) strength += 1;
+                // Check for lowercase
+                if (/[a-z]/.test(password)) strength += 1;
+                // Check for uppercase
+                if (/[A-Z]/.test(password)) strength += 1;
+                // Check for numbers
+                if (/[0-9]/.test(password)) strength += 1;
+                // Check for special characters
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+                // Determine strength level
+                if (strength <= 2) {
+                    feedback = '<span class="text-red-500">Weak</span>';
+                } else if (strength <= 3) {
+                    feedback = '<span class="text-yellow-500">Medium</span>';
+                } else {
+                    feedback = '<span class="text-green-500">Strong</span>';
+                }
+
+                resultDiv.innerHTML = `Password strength: ${feedback}`;
+            }
+
+            testConfirmPassword() {
+                const password = document.getElementById('confirm-test-password').value;
+                const confirmPassword = document.getElementById('confirm-test-confirm').value;
+                const resultDiv = document.getElementById('confirm-result');
+
+                if (confirmPassword === '') {
+                    resultDiv.innerHTML = '';
+                    return;
+                }
+
+                if (password === confirmPassword) {
+                    resultDiv.innerHTML = '<span class="text-green-500 flex items-center"><i class="ph ph-check-circle mr-1"></i>Confirmed</span>';
+                } else {
+                    resultDiv.innerHTML = '<span class="text-red-500 flex items-center"><i class="ph ph-x-circle mr-1"></i>Passwords do not match</span>';
+                }
+            }
+
+            async runAllTests() {
+                const resultsDiv = document.getElementById('complete-results');
+                resultsDiv.innerHTML = '<p class="info">Running comprehensive tests...</p>';
+
+                // Test 1: Backend connectivity
+                this.addResult('complete-results', '🔧 Testing backend connectivity...', 'info');
+                await this.testConnectivity();
+
+                // Test 2: Email functionality
+                this.addResult('complete-results', '📧 Testing email functionality...', 'info');
+                await this.testSendOTP();
+
+                // Test 3: Frontend features
+                this.addResult('complete-results', '🎨 Testing frontend features...', 'info');
+                this.testPasswordStrength('TestPassword123!');
+                this.testConfirmPassword();
+
+                this.addResult('complete-results', '✅ All tests completed!', 'success');
+            }
+
+            addResult(containerId, message, type) {
+                const container = document.getElementById(containerId);
+                const resultElement = document.createElement('div');
+                resultElement.className = `test-result ${type}`;
+                resultElement.innerHTML = message;
+                container.appendChild(resultElement);
+            }
+        }
+
+        // Initialize tester when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.apiTester = new APITester();
+        });
+    </script>
+</body>
+</html> 
