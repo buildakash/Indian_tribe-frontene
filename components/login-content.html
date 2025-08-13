@@ -1,0 +1,187 @@
+<!-- =================================================================
+     BREADCRUMB NAVIGATION
+     - Shows the user their current location on the site.
+================================================================== -->
+<div class="breadcrumb-block style-shared">
+    <div class="breadcrumb-main bg-linear overflow-hidden">
+        <div class="container lg:pt-[134px] pt-24 pb-10 relative">
+            <div class="main-content w-full h-full flex flex-col items-center justify-center relative z-[1]">
+                <div class="text-content">
+                    <div class="heading2 text-center">Login</div>
+                    <div class="link flex items-center justify-center gap-1 caption1 mt-3">
+                        <a href="index.html">Homepage</a>
+                        <i class="ph ph-caret-right text-sm text-secondary2"></i>
+                        <div class="text-secondary2 capitalize">Login</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =================================================================
+     LOGIN & REGISTER BLOCK
+     - A two-column layout for user authentication and registration prompts.
+================================================================== -->
+<div class="login-block md:py-20 py-10">
+    <div class="container">
+        <div class="content-main flex gap-y-8 max-md:flex-col">
+
+            <!-- ====== LEFT COLUMN: FORMS ====== -->
+            <div class="left md:w-1/2 w-full lg:pr-[60px] md:pr-[40px] md:border-r border-line">
+                <div class="heading4 mb-6">Login</div>
+
+                <!-- Global Success/Error Messages -->
+                <div id="success-message" class="success-message"></div>
+                <div id="error-message" class="error-message"></div>
+
+                <!-- Form 1: Login -->
+                <form id="login-form" class="login-form-container">
+                    <div class="flex flex-col gap-3">
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input class="form-input" id="email" type="email" placeholder="Enter your email address" required />
+                            <div class="error-message" id="email-error"></div>
+                        </div>
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="password" class="form-label">Password *</label>
+                            <input class="form-input" id="password" type="password" placeholder="Enter your password" required />
+                            <div class="error-message" id="password-error"></div>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center">
+                                <div class="block-input flex items-center">
+                                    <input type="checkbox" name="remember" id="remember" class="mr-1" />
+                                    <i class="ph-fill ph-check-square icon-checkbox text-2xl"></i>
+                                </div>
+                                <label for="remember" class="pl-2 cursor-pointer text-sm">Remember me</label>
+                            </div>
+                            <a href="#" id="forgot-password-link" class="forgot-password-link text-sm">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2" id="login-btn">
+                            Login
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Form 2: Forgot Password -->
+                <form id="forgot-password-form" class="login-form-container" style="display: none;">
+                    <div class="flex flex-col gap-5">
+                        <div>
+                            <div class="heading5 mb-2">Reset Password</div>
+                            <p class="text-sm text-gray-600 mb-2">Enter your email address and we'll send you a verification code to reset your password.</p>
+                        </div>
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="forgot-email" class="form-label">Email Address *</label>
+                            <input class="form-input" id="forgot-email" type="email" placeholder="Enter your email address" required />
+                            <div class="error-message" id="forgot-email-error"></div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button type="submit" class="btn-primary w-full" id="send-otp-btn">
+                                Send Reset Code
+                            </button>
+                            <button type="button" class="btn-secondary w-full" id="back-to-login" onclick="
+                                document.getElementById('forgot-password-form').style.display = 'none';
+                                document.getElementById('login-form').style.display = 'block';
+                                document.getElementById('otp-form').style.display = 'none';
+                                document.getElementById('reset-password-form').style.display = 'none';
+                            ">
+                                Back to Login
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form 3: OTP Verification -->
+                <form id="otp-form" class="login-form-container" style="display: none;">
+                    <div class="flex flex-col gap-5">
+                        <div>
+                            <div class="heading5 mb-2">Verify Reset Code</div>
+                            <p class="text-sm text-gray-600 mb-2">We've sent a 4-digit code to your email. Please enter it below.</p>
+                        </div>
+                        <div class="otp-container" id="otp-container">
+                            <div class="otp-inputs flex justify-center gap-3 mb-2">
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-1" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-2" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-3" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-4" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                            </div>
+                            <div class="error-message text-center" id="otp-error"></div>
+                            <div class="otp-timer-section flex flex-col items-center mt-2">
+                                <div id="timer-display" class="timer-display text-sm">
+                                    <span id="timer-text">Resend code in </span>
+                                    <span id="timer-countdown">60</span>
+                                    <span> seconds</span>
+                                </div>
+                                <button type="button" id="resend-otp-btn" class="btn-secondary mt-2" style="display: none;">
+                                    Resend Code
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button type="submit" class="btn-primary w-full" id="verify-otp-btn">
+                                Verify Code
+                            </button>
+                            <button type="button" class="btn-secondary w-full" id="back-to-forgot" onclick="
+                                document.getElementById('otp-form').style.display = 'none';
+                                document.getElementById('forgot-password-form').style.display = 'block';
+                                document.getElementById('login-form').style.display = 'none';
+                                document.getElementById('reset-password-form').style.display = 'none';
+                            ">
+                                Back
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form 4: Set New Password -->
+                <form id="reset-password-form" class="login-form-container" style="display: none;">
+                    <div class="flex flex-col gap-5">
+                        <div>
+                            <div class="heading5 mb-2">Set New Password</div>
+                            <p class="text-sm text-gray-600 mb-2">Please enter your new password below.</p>
+                        </div>
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="new-password" class="form-label">New Password *</label>
+                            <input class="form-input" id="new-password" type="password" placeholder="Enter new password" required />
+                            <div class="error-message" id="new-password-error"></div>
+                            <div class="password-requirements text-xs text-gray-500 mt-1">
+                                Password must be at least 8 characters with uppercase, lowercase, number, and special character.
+                            </div>
+                        </div>
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="confirm-password" class="form-label">Confirm Password *</label>
+                            <input class="form-input" id="confirm-password" type="password" placeholder="Confirm new password" required />
+                            <div class="error-message" id="confirm-password-error"></div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button type="submit" class="btn-primary w-full" id="reset-password-btn">
+                                Reset Password
+                            </button>
+                            <button type="button" class="btn-secondary w-full" id="back-to-otp" onclick="
+                                document.getElementById('reset-password-form').style.display = 'none';
+                                document.getElementById('otp-form').style.display = 'block';
+                                document.getElementById('login-form').style.display = 'none';
+                                document.getElementById('forgot-password-form').style.display = 'none';
+                            ">
+                                Back
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ====== RIGHT COLUMN: NEW CUSTOMER ====== -->
+            <div class="right md:w-1/2 w-full lg:pl-[60px] md:pl-[40px] flex items-center">
+                <div class="text-content">
+                    <div class="heading4">New Customer?</div>
+                    <div class="mt-2 text-secondary">Be part of our growing family of new customers! Join us today and unlock a world of exclusive benefits, offers, and personalized experiences.</div>
+                    <div class="block-button md:mt-7 mt-4">
+                        <a href="register.html" class="button-main">Register</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

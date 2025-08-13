@@ -1,0 +1,148 @@
+/* Custom styles for registration form */
+.otp-digit:focus {
+    border-color: #000;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.otp-digit {
+    transition: all 0.3s ease;
+}
+
+.password-strength .strength-bar {
+    background: #e5e7eb;
+    border-radius: 9999px;
+}
+
+.password-strength .strength-fill {
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.btn-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success message styles */
+.success-icon {
+    font-size: 4rem;
+    color: #10b981;
+}
+
+/* OTP verification styles */
+.otp-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.otp-digit {
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.otp-digit:focus {
+    border-color: #000;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Timer styles */
+.timer {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.75rem;
+}
+
+/* Resend button styles */
+#resendOtpBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Form label styles */
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+/* Back button styles */
+#backToForm {
+    font-size: 0.875rem;
+    color: #6b7280;
+    transition: color 0.3s ease;
+}
+
+#backToForm:hover {
+    color: #000;
+}
+
+/* Loading states */
+.button-main:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    max-width: 20rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.notification:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .otp-inputs {
+        gap: 0.5rem;
+    }
+    
+    .otp-digit {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1rem;
+    }
+}

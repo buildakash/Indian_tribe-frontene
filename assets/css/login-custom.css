@@ -1,0 +1,186 @@
+/* Custom styles for login page */
+.login-block {
+    min-height: calc(100vh - 400px);
+    display: flex;
+    align-items: center;
+}
+.login-form-container {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-input:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+.form-input.error {
+    border-color: #ef4444;
+}
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+.btn-primary {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-primary:hover {
+    background-color: #374151;
+}
+.btn-primary:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+.btn-secondary {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+.btn-secondary:hover {
+    background-color: #000;
+    color: white;
+}
+.forgot-password-link {
+    color: #dc2626;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+.forgot-password-link:hover {
+    color: #b91c1c;
+    text-decoration: underline;
+}
+.otp-container {
+    margin-top: 1rem;
+}
+.otp-inputs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+.otp-input {
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+.otp-input:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+.reset-password-container {
+    display: none;
+    margin-top: 1rem;
+}
+.password-requirements {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+.success-message {
+    color: #059669;
+    background-color: #d1fae5;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: none;
+}
+.error-message {
+    color: #ef4444;
+    background-color: #fee2e2;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: none;
+}
+@media (max-width: 768px) {
+    .login-block {
+        padding: 2rem 1rem;
+    }
+    .login-form-container {
+        max-width: 100%;
+    }
+}
+.otp-timer-section {
+    text-align: center;
+    margin: 1rem 0;
+}
+.timer-display {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+#timer-countdown {
+    font-weight: 600;
+    color: #ef4444;
+}
+#otp-form .otp-container {
+    display: block !important;
+    margin-top: 1rem;
+}
+#otp-form .otp-inputs {
+    display: flex !important;
+    gap: 0.5rem !important;
+    justify-content: center !important;
+    margin-bottom: 1rem !important;
+}
+#otp-form .otp-input {
+    display: block !important;
+    width: 3rem !important;
+    height: 3rem !important;
+    text-align: center !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.5rem !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    background-color: white !important;
+    color: #000 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+#otp-form .otp-input:focus {
+    outline: none !important;
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+}
