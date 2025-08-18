@@ -29,7 +29,12 @@
 
             <!-- ====== LEFT COLUMN: FORMS ====== -->
             <div class="left md:w-1/2 w-full lg:pr-[60px] md:pr-[40px] md:border-r border-line">
-                <div class="heading4 mb-6">Login</div>
+                <div id="login-header" class="heading4 mb-6">Login</div>
+                <div id="signup-header" class="heading4 mb-6 hidden">Create Account</div>
+                <div id="forgot-password-header" class="heading4 mb-6 hidden">Reset Password</div>
+                <div id="reset-otp-header" class="heading4 mb-6 hidden">Verify Reset Code</div>
+                <div id="reset-password-header" class="heading4 mb-6 hidden">Set New Password</div>
+                <div id="otp-header" class="heading4 mb-6 hidden">Verify Email</div>
 
                 <!-- Global Success/Error Messages -->
                 <div id="success-message" class="success-message" role="status" aria-live="polite"></div>
@@ -39,13 +44,18 @@
                 <form id="login-form" class="login-form-container">
                     <div class="flex flex-col gap-3">
                         <div class="form-group flex flex-col gap-1">
-                            <label for="login-email" class="form-label">Email Address *</nlabel>
+                            <label for="login-email" class="form-label">Email Address *</label>
                             <input class="form-input" id="login-email" type="email" placeholder="Enter your email address" autocomplete="email" required />
                             <div class="error-message" id="login-email-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="login-password" class="form-label">Password *</label>
-                            <input class="form-input" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
+                            <div class="relative">
+                                <input class="form-input pr-12" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
+                                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" id="toggle-password">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </button>
+                            </div>
                             <div class="error-message" id="login-password-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="flex items-center justify-between mb-2">
@@ -64,11 +74,103 @@
                     </div>
                 </form>
 
+                <!-- Form: Signup -->
+                <form id="signup-form" class="login-form-container hidden">
+                    <div class="flex flex-col gap-3">
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="signup-name" class="form-label">Full Name *</label>
+                            <input class="form-input" id="signup-name" type="text" placeholder="Enter your full name" autocomplete="name" required />
+                            <div class="error-message" id="signup-name-error" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="signup-email" class="form-label">Email Address *</label>
+                            <input class="form-input" id="signup-email" type="email" placeholder="Enter your email address" autocomplete="email" required />
+                            <div class="error-message" id="signup-email-error" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="signup-phone" class="form-label">Phone Number *</label>
+                            <input class="form-input" id="signup-phone" type="tel" placeholder="Enter 10-digit phone number" maxlength="10" required />
+                            <div class="error-message" id="signup-phone-error" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="signup-password" class="form-label">Password *</label>
+                            <div class="relative">
+                                <input class="form-input pr-12" id="signup-password" type="password" placeholder="Enter your password" autocomplete="new-password" required />
+                                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" id="toggle-signup-password">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </button>
+                            </div>
+                            <div class="error-message" id="signup-password-error" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group flex flex-col gap-1">
+                            <label for="signup-confirm-password" class="form-label">Confirm Password *</label>
+                            <div class="relative">
+                                <input class="form-input pr-12" id="signup-confirm-password" type="password" placeholder="Confirm your password" autocomplete="new-password" required />
+                                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" id="toggle-signup-confirm-password">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </button>
+                            </div>
+                            <div class="error-message" id="signup-confirm-password-error" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <div class="block-input flex items-center">
+                                <input type="checkbox" name="terms" id="terms" class="mr-1" required />
+                                <i class="ph-fill ph-check-square icon-checkbox text-2xl"></i>
+                            </div>
+                            <label for="terms" class="pl-2 cursor-pointer text-sm">I agree to the <a href="#" class="text-blue-600 hover:underline">Terms & Conditions</a></label>
+                        </div>
+                        <button type="submit" class="btn-primary w-full mt-2" id="signup-submit-btn">
+                            Create Account
+                        </button>
+                        <div class="text-center mt-3">
+                            <span class="text-sm text-gray-600">Already have an account? </span>
+                            <button type="button" id="show-login-form" class="text-sm text-blue-600 hover:underline bg-transparent border-none cursor-pointer">Sign In</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form: OTP Verification for Signup -->
+                <form id="otp-form" class="login-form-container hidden">
+                    <div class="flex flex-col gap-5">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-2">We've sent a 6-digit verification code to <span id="otp-email-display" class="font-semibold"></span></p>
+                        </div>
+                        <div class="otp-container">
+                            <div class="otp-inputs flex justify-center gap-3 mb-2">
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-1" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-2" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-3" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-4" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-5" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-6" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                            </div>
+                            <div class="error-message text-center" id="otp-error" role="alert" aria-live="polite"></div>
+                            <div class="otp-timer-section flex flex-col items-center mt-2">
+                                <div id="timer-display" class="timer-display text-sm">
+                                    <span id="timer-text">Resend code in </span>
+                                    <span id="timer-countdown">60</span>
+                                    <span> seconds</span>
+                                </div>
+                                <button type="button" id="resend-otp-btn" class="btn-secondary mt-2 hidden">
+                                    Resend Code
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button type="submit" class="btn-primary w-full" id="verify-otp-btn">
+                                Verify & Complete Registration
+                            </button>
+                            <button type="button" class="btn-secondary w-full" id="back-to-signup">
+                                Back to Registration
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
                 <!-- Form 2: Forgot Password -->
                 <form id="forgot-password-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
-                            <div class="heading5 mb-2">Reset Password</div>
                             <p class="text-sm text-gray-600 mb-2">Enter your email address and we'll send you a verification code to reset your password.</p>
                         </div>
                         <div class="form-group flex flex-col gap-1">
@@ -91,8 +193,7 @@
                 <form id="reset-otp-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
-                            <div class="heading5 mb-2">Verify Reset Code</div>
-                            <p class="text-sm text-gray-600 mb-2">We've sent a 4-digit code to your email. Please enter it below.</p>
+                            <p class="text-sm text-gray-600 mb-2">We've sent a 4-digit code to <span id="reset-otp-email-display" class="font-semibold"></span>. Please enter it below.</p>
                         </div>
                         <div class="otp-container" id="reset-otp-container">
                             <div class="otp-inputs flex justify-center gap-3 mb-2">
@@ -128,21 +229,30 @@
                 <form id="reset-password-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
-                            <div class="heading5 mb-2">Set New Password</div>
-                            <p class="text-sm text-gray-600 mb-2">Please enter your new password below.</p>
+                            <p class="text-sm text-gray-600 mb-2">Please enter your new password for <span id="reset-email-display" class="font-semibold"></span>.</p>
                         </div>
                         <div class="form-group flex flex-col gap-1">
-                            <label for="new-password" class="form-label">New Password *</label>
-                            <input class="form-input" id="reset-new-password" type="password" placeholder="Enter new password" autocomplete="new-password" required />
-                            <div class="error-message" id="new-password-error" role="alert" aria-live="polite"></div>
+                            <label for="reset-new-password" class="form-label">New Password *</label>
+                            <div class="relative">
+                                <input class="form-input pr-12" id="reset-new-password" type="password" placeholder="Enter new password" autocomplete="new-password" required />
+                                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" id="toggle-reset-password">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </button>
+                            </div>
+                            <div class="error-message" id="reset-new-password-error" role="alert" aria-live="polite"></div>
                             <div class="password-requirements text-xs text-gray-500 mt-1">
                                 Password must be at least 8 characters with uppercase, lowercase, number, and special character.
                             </div>
                         </div>
                         <div class="form-group flex flex-col gap-1">
-                            <label for="confirm-password" class="form-label">Confirm Password *</label>
-                            <input class="form-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" autocomplete="new-password" required />
-                            <div class="error-message" id="confirm-password-error" role="alert" aria-live="polite"></div>
+                            <label for="reset-confirm-password" class="form-label">Confirm Password *</label>
+                            <div class="relative">
+                                <input class="form-input pr-12" id="reset-confirm-password" type="password" placeholder="Confirm new password" autocomplete="new-password" required />
+                                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700" id="toggle-reset-confirm-password">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </button>
+                            </div>
+                            <div class="error-message" id="reset-confirm-password-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="flex flex-col gap-2">
                             <button type="submit" class="btn-primary w-full" id="reset-password-submit-btn">
@@ -159,8 +269,260 @@
             <!-- ====== RIGHT COLUMN: NEW CUSTOMER ====== -->
             <div class="right md:w-1/2 w-full lg:pl-[60px] md:pl-[40px] flex items-center">
                 <div class="text-content">
-                    <div class="heading4">New Customer?</div>
-                    <div class="mt-2 text-secondary">Be part of our growing family of new customers! Join us today and unlock a world of exclusive benefits, offers, and personalized experiences.</div>
+                    <div id="new-customer-content">
+                        <div class="heading4">New Customer?</div>
+                        <div class="mt-2 text-secondary">Be part of our growing family of new customers! Join us today and unlock a world of exclusive benefits, offers, and personalized experiences.</div>
+                        <div class="block-button md:mt-7 mt-4">
+                            <button type="button" id="show-signup-form" class="button-main">Register</button>
+                        </div>
+                    </div>
+                    <div id="existing-customer-content" class="hidden">
+                        <div class="heading4">Already have an account?</div>
+                        <div class="mt-2 text-secondary">Welcome back! Sign in to access your personalized experience, saved preferences, and exclusive member benefits.</div>
+                        <div class="block-button md:mt-7 mt-4">
+                            <button type="button" id="show-login-form" class="button-main">Sign In</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Newsletter Modal -->
+<div class="modal-newsletter" style="display: none;">
+    <div class="modal-newsletter-main flex items-center justify-center h-full">
+        <div class="main-content bg-white rounded-2xl overflow-hidden max-w-[900px] w-full mx-4">
+            <div class="flex max-md:flex-col">
+                <div class="left md:w-1/2 w-full">
+                    <img src="https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg" alt="newsletter" class="w-full h-full object-cover" />
+                </div>
+                <div class="right md:w-1/2 w-full p-8">
+                    <div class="close-newsletter-btn absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200">
+                        <i class="ph ph-x text-lg"></i>
+                    </div>
+                    <div class="heading4 mb-4">Stay Updated!</div>
+                    <div class="text-secondary mb-6">Subscribe to our newsletter and be the first to know about new products, exclusive offers, and fashion trends.</div>
+                    <form id="newsletter-form" class="space-y-4">
+                        <div>
+                            <input type="email" id="newsletter-email" placeholder="Enter your email address" class="w-full p-3 border border-gray-300 rounded-lg" required />
+                        </div>
+                        <button type="submit" class="button-main w-full">Subscribe Now</button>
+                    </form>
+                    <div class="text-center mt-4">
+                        <button type="button" class="close-newsletter-btn text-sm text-gray-500 hover:text-gray-700">No thanks, maybe later</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize login content functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for components to load
+    document.addEventListener('components:loaded', initializeLoginContent);
+    
+    // Also initialize immediately in case components are already loaded
+    if (document.querySelector('#login-form')) {
+        initializeLoginContent();
+    }
+});
+
+function initializeLoginContent() {
+    // Form switching functionality
+    const showSignupBtn = document.getElementById('show-signup-form');
+    const showLoginBtn = document.getElementById('show-login-form');
+    const showForgotBtn = document.getElementById('show-forgot-password-form');
+    
+    // Back buttons
+    const backToLoginFromForgot = document.getElementById('back-to-login-from-forgot');
+    const backToForgotFromOtp = document.getElementById('back-to-forgot-from-otp');
+    const backToForgotPassword = document.getElementById('back-to-forgot-password');
+    const backToSignup = document.getElementById('back-to-signup');
+    
+    // Password toggle buttons
+    const togglePassword = document.getElementById('toggle-password');
+    const toggleSignupPassword = document.getElementById('toggle-signup-password');
+    const toggleSignupConfirmPassword = document.getElementById('toggle-signup-confirm-password');
+    const toggleResetPassword = document.getElementById('toggle-reset-password');
+    const toggleResetConfirmPassword = document.getElementById('toggle-reset-confirm-password');
+    
+    // Newsletter modal
+    const newsletterModal = document.querySelector('.modal-newsletter');
+    const closeNewsletterBtns = document.querySelectorAll('.close-newsletter-btn');
+    const newsletterForm = document.getElementById('newsletter-form');
+    
+    // Form switching functions
+    function showForm(formType) {
+        // Hide all forms and headers
+        const forms = ['login-form', 'signup-form', 'otp-form', 'forgot-password-form', 'reset-otp-form', 'reset-password-form'];
+        const headers = ['login-header', 'signup-header', 'otp-header', 'forgot-password-header', 'reset-otp-header', 'reset-password-header'];
+        const rightContent = ['new-customer-content', 'existing-customer-content'];
+        
+        forms.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.classList.add('hidden');
+        });
+        
+        headers.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.classList.add('hidden');
+        });
+        
+        rightContent.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.classList.add('hidden');
+        });
+        
+        // Show specific form and header
+        const targetForm = document.getElementById(formType + '-form');
+        const targetHeader = document.getElementById(formType + '-header');
+        
+        if (targetForm) targetForm.classList.remove('hidden');
+        if (targetHeader) targetHeader.classList.remove('hidden');
+        
+        // Show appropriate right content
+        if (formType === 'login' || formType === 'forgot-password' || formType === 'reset-otp' || formType === 'reset-password') {
+            const newCustomerContent = document.getElementById('new-customer-content');
+            if (newCustomerContent) newCustomerContent.classList.remove('hidden');
+        } else if (formType === 'signup' || formType === 'otp') {
+            const existingCustomerContent = document.getElementById('existing-customer-content');
+            if (existingCustomerContent) existingCustomerContent.classList.remove('hidden');
+        }
+    }
+    
+    // Password toggle functionality
+    function setupPasswordToggle(toggleBtn, inputId) {
+        if (!toggleBtn) return;
+        
+        toggleBtn.addEventListener('click', function() {
+            const input = document.getElementById(inputId);
+            const icon = toggleBtn.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'ph ph-eye-slash text-lg';
+            } else {
+                input.type = 'password';
+                icon.className = 'ph ph-eye text-lg';
+            }
+        });
+    }
+    
+    // Setup all password toggles
+    setupPasswordToggle(togglePassword, 'login-password');
+    setupPasswordToggle(toggleSignupPassword, 'signup-password');
+    setupPasswordToggle(toggleSignupConfirmPassword, 'signup-confirm-password');
+    setupPasswordToggle(toggleResetPassword, 'reset-new-password');
+    setupPasswordToggle(toggleResetConfirmPassword, 'reset-confirm-password');
+    
+    // Form switching event listeners
+    if (showSignupBtn) {
+        showSignupBtn.addEventListener('click', () => showForm('signup'));
+    }
+    
+    if (showLoginBtn) {
+        showLoginBtn.addEventListener('click', () => showForm('login'));
+    }
+    
+    if (showForgotBtn) {
+        showForgotBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showForm('forgot-password');
+        });
+    }
+    
+    // Back button event listeners
+    if (backToLoginFromForgot) {
+        backToLoginFromForgot.addEventListener('click', () => showForm('login'));
+    }
+    
+    if (backToForgotFromOtp) {
+        backToForgotFromOtp.addEventListener('click', () => showForm('forgot-password'));
+    }
+    
+    if (backToForgotPassword) {
+        backToForgotPassword.addEventListener('click', () => showForm('forgot-password'));
+    }
+    
+    if (backToSignup) {
+        backToSignup.addEventListener('click', () => showForm('signup'));
+    }
+    
+    // Newsletter modal functionality
+    closeNewsletterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (newsletterModal) {
+                newsletterModal.style.display = 'none';
+                localStorage.setItem('popupSeen', 'true');
+            }
+        });
+    });
+    
+    if (newsletterModal) {
+        newsletterModal.addEventListener('click', (e) => {
+            if (e.target === newsletterModal) {
+                newsletterModal.style.display = 'none';
+                localStorage.setItem('popupSeen', 'true');
+            }
+        });
+    }
+    
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            
+            if (email) {
+                // Simulate newsletter subscription
+                window.toast?.success('Thank you for subscribing to our newsletter!', 'Subscription Successful');
+                newsletterModal.style.display = 'none';
+                localStorage.setItem('popupSeen', 'true');
+            }
+        });
+    }
+    
+    // Phone number input restrictions for signup
+    const phoneInput = document.getElementById('signup-phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+        
+        phoneInput.addEventListener('keydown', function(e) {
+            // Allow: backspace, delete, tab, escape, enter, and navigation keys
+            if ([8, 9, 27, 13, 46, 37, 39, 38, 40].indexOf(e.keyCode) !== -1 ||
+                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true)) {
+                return;
+            }
+            
+            // Allow only numbers (0-9)
+            if (e.keyCode >= 48 && e.keyCode <= 57) {
+                // Check if we're already at 10 digits
+                if (this.value.replace(/\D/g, '').length >= 10) {
+                    e.preventDefault();
+                    return;
+                }
+                return;
+            }
+            
+            // Prevent all other keys
+            e.preventDefault();
+        });
+    }
+    
+    // Initialize with login form visible
+    showForm('login');
+    
+    console.log('Login content functionality initialized');
+}
+</script>
                     <div class="block-button md:mt-7 mt-4">
                         <a href="register.html" class="button-main">Register</a>
                     </div>
