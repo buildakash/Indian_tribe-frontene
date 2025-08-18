@@ -4,10 +4,7 @@ window.AppConfig = {
 };
 
 // Login page functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // A small delay to ensure all components are loaded by loadComponents.js
-    setTimeout(initializeLoginLogic, 100); 
-});
+document.addEventListener('components:loaded', initializeLoginLogic);
 
 function initializeLoginLogic() {
     const loginForm = document.getElementById('login-form');
@@ -15,16 +12,13 @@ function initializeLoginLogic() {
     const otpForm = document.getElementById('otp-form');
     const resetPasswordForm = document.getElementById('reset-password-form');
     
-    // Check if forms exist before adding listeners
-    if (!loginForm || !forgotPasswordForm || !otpForm || !resetPasswordForm) {
-        console.warn("One or more forms not found. Login logic will not run. This is normal on other pages.");
-        return;
-    }
+    // If forms are not present (e.g., different page), exit gracefully
+    if (!loginForm || !forgotPasswordForm || !otpForm || !resetPasswordForm) return;
 
-    const forgotPasswordLink = document.getElementById('forgot-password-link');
-    const backToLoginBtn = document.getElementById('back-to-login');
-    const backToForgotBtn = document.getElementById('back-to-forgot');
-    const backToOtpBtn = document.getElementById('back-to-otp');
+    const forgotPasswordLink = document.getElementById('show-forgot-password-form');
+    const backToLoginBtn = document.getElementById('back-to-login-from-forgot');
+    const backToForgotBtn = document.getElementById('back-to-forgot-from-otp');
+    const backToOtpBtn = document.getElementById('back-to-forgot-password');
     
     let currentEmail = '';
     let currentOtp = '';
@@ -47,10 +41,7 @@ function initializeLoginLogic() {
         // The rest of your login submission logic...
     });
     
-    forgotPasswordLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        showForm('forgot-password-form');
-    });
+    if (forgotPasswordLink) forgotPasswordLink.addEventListener('click', function(e) { e.preventDefault(); showForm('forgot-password-form'); });
 
     // And so on for all your other functions and event listeners.
     

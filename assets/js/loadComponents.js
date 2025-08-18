@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const loadHtmlComponent = (selector, filePath) => {
-        fetch(filePath)
+        return fetch(filePath)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Could not load ${filePath}: ${response.statusText}`);
@@ -46,6 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
             '#mobile-bottom-bar-placeholder': './components/mobile-bottom-bar.html',
             '#footer-placeholder': './components/footer.html',
             '#modals-and-helpers-placeholder': './components/modals-and-helpers.html'
+        },
+        'index-modular.html': {
+            '#top-nav-placeholder': './components/top-nav.html',
+            '#header-placeholder': './components/header.html',
+            '#mobile-bottom-bar-placeholder': './components/mobile-bottom-bar.html',
+            '#main-content-placeholder': './components/index-main-content.html',
+            '#footer-placeholder': './components/footer.html',
+            '#modals-and-helpers-placeholder': './components/modals-and-helpers.html'
         }
     };
 
@@ -53,7 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const components = pageComponents[currentPage] || pageComponents['login.html'];
 
     // Load all components for the current page
+    const promises = [];
     for (const [selector, path] of Object.entries(components)) {
-        loadHtmlComponent(selector, path);
+        promises.push(loadHtmlComponent(selector, path));
     }
+    Promise.all(promises).then(() => {
+        document.dispatchEvent(new Event('components:loaded'));
+    });
 });

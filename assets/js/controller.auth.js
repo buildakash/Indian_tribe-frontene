@@ -5,6 +5,7 @@
       this.currentUser = null;
       this.currentEmail = null;
       this.otpTimer = null;
+      this._eventsBound = false;
       this.init();
     }
 
@@ -17,6 +18,15 @@
       this.initResetOtpInputs();
       this.setupPasswordToggles();
       this.maybeShowModal();
+      this.prefillLoginFromSessionOrQuery();
+
+      // Re-bind after dynamic components load
+      document.addEventListener('components:loaded', () => {
+        this.bindEvents();
+        this.initOtpInputs();
+        this.initResetOtpInputs();
+        this.prefillLoginFromSessionOrQuery();
+      }, { once: true });
       
       // Ensure modal is hidden if user is logged in
       if (localStorage.getItem('userLoggedIn') === 'true') {
@@ -137,8 +147,9 @@
     showModal() { document.querySelector('.modal-newsletter')?.style && (document.querySelector('.modal-newsletter').style.display = 'flex'); }
     hideModal() { const m = document.querySelector('.modal-newsletter'); if (m) m.style.display = 'none'; }
 
-    // Bind UI events
+    // Bind UI events (idempotent)
     bindEvents() {
+      if (this._eventsBound) return;
       // Close modal
       document.querySelector('.close-newsletter-btn')?.addEventListener('click', () => { this.hideModal(); localStorage.setItem('popupSeen', 'true'); });
       const modal = document.querySelector('.modal-newsletter');
@@ -154,7 +165,7 @@
       document.getElementById('back-to-login-from-forgot')?.addEventListener('click', () => AuthUI.showLogin());
       document.getElementById('back-to-forgot-from-otp')?.addEventListener('click', () => AuthUI.showForgot());
       document.getElementById('back-to-forgot-password')?.addEventListener('click', () => AuthUI.showForgot());
-      document.getElementById('show-forgot-password-form')?.addEventListener('click', () => AuthUI.showForgot());
+      document.getElementById('show-forgot-password-form')?.addEventListener('click', (e) => { e.preventDefault(); AuthUI.showForgot(); this.prefillForgotFromLogin(); });
 
       // Forms
       document.getElementById('login-form')?.addEventListener('submit', (e) => this.onLogin(e));
@@ -167,6 +178,8 @@
 
       // Live validations
       this.setupLiveValidation();
+
+      this._eventsBound = true;
     }
 
     // Password toggles
@@ -218,17 +231,50 @@
     }
 
     // OTP inputs
-    initOtpInputs() { this.bindOtpInputs(['otp-input-1', 'otp-input-2', 'otp-input-3', 'otp-input-4']); }
+    initOtpInputs() { this.bindOtpInputs(['otp-input-1','otp-input-2','otp-input-3','otp-input-4','otp-input-5','otp-input-6']); }
     initResetOtpInputs() { this.bindOtpInputs(['reset-otp-input-1', 'reset-otp-input-2', 'reset-otp-input-3', 'reset-otp-input-4']); }
     bindOtpInputs(ids) {
       ids.forEach((id, idx) => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener('input', (e) => { if (e.target.value.length === 1 && idx < ids.length - 1) document.getElementById(ids[idx + 1]).focus(); });
+        el.addEventListener('input', (e) => {
+          e.target.value = e.target.value.replace(/\D/g, '').slice(0,1);
+          if (e.target.value.length === 1 && idx < ids.length - 1) document.getElementById(ids[idx + 1]).focus();
+        });
         el.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !e.target.value && idx > 0) document.getElementById(ids[idx - 1]).focus(); });
+        el.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const nums = (e.clipboardData?.getData('text') || '').replace(/\D/g, '');
+          nums.split('').slice(0, ids.length).forEach((ch, i) => {
+            const target = document.getElementById(ids[i]);
+            if (target) target.value = ch;
+          });
+          const focusIndex = Math.min(nums.length, ids.length) - 1;
+          if (focusIndex >= 0) document.getElementById(ids[focusIndex]).focus();
+        });
       });
     }
     readOtp(ids) { return ids.map(id => document.getElementById(id)?.value || '').join(''); }
+
+    // Prefill forgot email using sessionStorage or login field
+    prefillForgotFromLogin() {
+      const loginEmail = document.getElementById('login-email')?.value?.trim();
+      const saved = sessionStorage.getItem('authEmail') || '';
+      const value = Utils.isValidEmail(loginEmail) ? loginEmail : (Utils.isValidEmail(saved) ? saved : '');
+      const forgotInput = document.getElementById('forgot-email');
+      if (forgotInput && value) forgotInput.value = value;
+    }
+
+    // Prefill login email from URL query or sessionStorage
+    prefillLoginFromSessionOrQuery() {
+      const input = document.getElementById('login-email');
+      if (!input) return;
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = params.get('email');
+      const saved = sessionStorage.getItem('authEmail');
+      const candidate = fromQuery || saved || '';
+      if (candidate && Utils.isValidEmail(candidate)) input.value = candidate;
+    }
 
     // Handlers
     async onLogin(e) {
@@ -246,7 +292,7 @@
           this.hideModal();
           window.toast.success('Welcome back! You are now logged in.');
           setTimeout(() => { window.location.href = 'index.html'; }, 1200);
-        } else { window.toast.error(res.message || 'Login failed'); }
+        } else { window.toast.error('Invalid email or password'); }
       } catch (e1) { window.toast.error('Network error. Please try again.'); }
       finally { Utils.clearLoading(btn); }
     }
@@ -316,12 +362,11 @@
       try {
         Utils.setLoading(btn, 'Sending...');
         const res = await AuthAPI.forgotPassword({ email });
-        if (res.status === 'success') {
-          this.currentEmail = email;
-          window.toast.success('Password reset OTP sent to your email!');
-          AuthUI.showResetOtp(email);
-          this.startOtpTimer();
-        } else { window.toast.error(res.message || 'Failed to send reset OTP'); }
+        this.currentEmail = email;
+        sessionStorage.setItem('authEmail', email);
+        window.toast.info('If an account exists for that email, we sent a verification code.');
+        AuthUI.showResetOtp(email);
+        this.startOtpTimer(60);
       } catch (e1) { window.toast.error('Network error. Please try again.'); }
       finally { Utils.clearLoading(btn); }
     }
@@ -332,13 +377,16 @@
       const otp = this.readOtp(['reset-otp-input-1','reset-otp-input-2','reset-otp-input-3','reset-otp-input-4']);
       const err = Validators.otp4(otp);
       if (err) return window.toast.error(err);
+      const btn = document.getElementById('verify-reset-otp-btn');
       try {
+        Utils.setLoading(btn, 'Verifying...');
         const res = await AuthAPI.verifyForgotOtp({ email, otp });
         if (res.status === 'success') {
-          window.toast.success('OTP verified successfully! Set your new password.');
+          window.toast.success('Code verified. Please set a new password.');
           AuthUI.showResetPassword(email);
-        } else { window.toast.error(res.message || 'Invalid OTP'); }
+        } else { window.toast.error('Invalid or expired code'); }
       } catch (e1) { window.toast.error('Network error. Please try again.'); }
+      finally { Utils.clearLoading(btn); }
     }
 
     async onResetPassword(e) {
@@ -353,27 +401,26 @@
         Utils.setLoading(btn, 'Resetting...');
         const res = await AuthAPI.resetPassword({ email, new_password: newPassword, confirm_password: confirm });
         if (res.status === 'success') {
-          window.toast.success('Password reset successfully! Please login.');
+          window.toast.success('Password reset successfully. Please login.');
           AuthUI.showLogin();
           const loginEmail = document.getElementById('login-email');
           if (loginEmail) loginEmail.value = email;
+          sessionStorage.setItem('authEmail', email);
         } else { window.toast.error(res.message || 'Failed to reset password'); }
       } catch (e1) { window.toast.error('Network error. Please try again.'); }
       finally { Utils.clearLoading(btn); }
     }
 
     // OTP Timer
-    startOtpTimer() {
+    startOtpTimer(seconds = 60) {
       this.stopOtpTimer();
-      let timeLeft = 120;
+      let timeLeft = seconds;
       const timerElement = document.getElementById('timer-countdown');
       const resendBtn = document.getElementById('resend-otp-btn');
       const timerText = document.getElementById('timer-text');
       if (resendBtn) resendBtn.classList.add('hidden');
       this.otpTimer = setInterval(() => {
-        const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-        const s = (timeLeft % 60).toString().padStart(2, '0');
-        if (timerElement) timerElement.textContent = `${m}:${s}`;
+        if (timerElement) timerElement.textContent = `${timeLeft}`;
         if (timeLeft <= 0) {
           this.stopOtpTimer();
           if (resendBtn) resendBtn.classList.remove('hidden');
@@ -383,6 +430,39 @@
       }, 1000);
     }
     stopOtpTimer() { if (this.otpTimer) { clearInterval(this.otpTimer); this.otpTimer = null; } }
+
+    // Client-side resend throttling and purpose=forgot
+    canResend() {
+      const lastTs = parseInt(localStorage.getItem('lastResendTs') || '0', 10);
+      return Date.now() - lastTs > 60000; // 60s
+    }
+    markResend() { localStorage.setItem('lastResendTs', String(Date.now())); }
+
+    async onResendOtp() {
+      if (!this.currentEmail) return;
+      if (!this.canResend()) {
+        return window.toast.info('Please wait before requesting a new code.');
+      }
+      try {
+        // Determine purpose based on visible form / pending signup
+        const resetOtpVisible = !document.getElementById('reset-otp-form')?.classList.contains('hidden');
+        const pendingSignup = localStorage.getItem('pendingSignup');
+        let purpose = 'forgot';
+        let name = '';
+        if (!resetOtpVisible && pendingSignup) {
+          purpose = 'signup';
+          try { name = JSON.parse(pendingSignup).name || ''; } catch(_) {}
+        }
+        const res = await AuthAPI.resendOtp({ email: this.currentEmail, purpose, name });
+        if (res.status === 'success') {
+          window.toast.success('A new code has been sent.');
+          this.markResend();
+          this.startOtpTimer(60);
+        } else {
+          window.toast.error(res.message || 'Please wait before requesting a new code.');
+        }
+      } catch (_) { window.toast.error('Network error. Please try again.'); }
+    }
   }
 
   // bootstrap

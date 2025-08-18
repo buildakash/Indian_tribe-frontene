@@ -32,21 +32,21 @@
                 <div class="heading4 mb-6">Login</div>
 
                 <!-- Global Success/Error Messages -->
-                <div id="success-message" class="success-message"></div>
-                <div id="error-message" class="error-message"></div>
+                <div id="success-message" class="success-message" role="status" aria-live="polite"></div>
+                <div id="error-message" class="error-message" role="alert" aria-live="polite"></div>
 
                 <!-- Form 1: Login -->
                 <form id="login-form" class="login-form-container">
                     <div class="flex flex-col gap-3">
                         <div class="form-group flex flex-col gap-1">
-                            <label for="email" class="form-label">Email Address *</label>
-                            <input class="form-input" id="email" type="email" placeholder="Enter your email address" required />
-                            <div class="error-message" id="email-error"></div>
+                            <label for="login-email" class="form-label">Email Address *</nlabel>
+                            <input class="form-input" id="login-email" type="email" placeholder="Enter your email address" autocomplete="email" required />
+                            <div class="error-message" id="login-email-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="form-group flex flex-col gap-1">
-                            <label for="password" class="form-label">Password *</label>
-                            <input class="form-input" id="password" type="password" placeholder="Enter your password" required />
-                            <div class="error-message" id="password-error"></div>
+                            <label for="login-password" class="form-label">Password *</label>
+                            <input class="form-input" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
+                            <div class="error-message" id="login-password-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center">
@@ -56,16 +56,16 @@
                                 </div>
                                 <label for="remember" class="pl-2 cursor-pointer text-sm">Remember me</label>
                             </div>
-                            <a href="#" id="forgot-password-link" class="forgot-password-link text-sm">Forgot Password?</a>
+                            <a href="#" id="show-forgot-password-form" class="forgot-password-link text-sm">Forgot Password?</a>
                         </div>
-                        <button type="submit" class="btn-primary w-full mt-2" id="login-btn">
+                        <button type="submit" class="btn-primary w-full mt-2" id="login-submit-btn">
                             Login
                         </button>
                     </div>
                 </form>
 
                 <!-- Form 2: Forgot Password -->
-                <form id="forgot-password-form" class="login-form-container" style="display: none;">
+                <form id="forgot-password-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
                             <div class="heading5 mb-2">Reset Password</div>
@@ -74,18 +74,13 @@
                         <div class="form-group flex flex-col gap-1">
                             <label for="forgot-email" class="form-label">Email Address *</label>
                             <input class="form-input" id="forgot-email" type="email" placeholder="Enter your email address" required />
-                            <div class="error-message" id="forgot-email-error"></div>
+                            <div class="error-message" id="forgot-email-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="flex flex-col gap-2">
-                            <button type="submit" class="btn-primary w-full" id="send-otp-btn">
+                            <button type="submit" class="btn-primary w-full" id="forgot-password-submit-btn">
                                 Send Reset Code
                             </button>
-                            <button type="button" class="btn-secondary w-full" id="back-to-login" onclick="
-                                document.getElementById('forgot-password-form').style.display = 'none';
-                                document.getElementById('login-form').style.display = 'block';
-                                document.getElementById('otp-form').style.display = 'none';
-                                document.getElementById('reset-password-form').style.display = 'none';
-                            ">
+                            <button type="button" class="btn-secondary w-full" id="back-to-login-from-forgot">
                                 Back to Login
                             </button>
                         </div>
@@ -93,41 +88,36 @@
                 </form>
 
                 <!-- Form 3: OTP Verification -->
-                <form id="otp-form" class="login-form-container" style="display: none;">
+                <form id="reset-otp-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
                             <div class="heading5 mb-2">Verify Reset Code</div>
                             <p class="text-sm text-gray-600 mb-2">We've sent a 4-digit code to your email. Please enter it below.</p>
                         </div>
-                        <div class="otp-container" id="otp-container">
+                        <div class="otp-container" id="reset-otp-container">
                             <div class="otp-inputs flex justify-center gap-3 mb-2">
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-1" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-2" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-3" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-4" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-1" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-2" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-3" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
+                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-4" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
                             </div>
-                            <div class="error-message text-center" id="otp-error"></div>
+                            <div class="error-message text-center" id="reset-otp-error" role="alert" aria-live="polite"></div>
                             <div class="otp-timer-section flex flex-col items-center mt-2">
                                 <div id="timer-display" class="timer-display text-sm">
                                     <span id="timer-text">Resend code in </span>
                                     <span id="timer-countdown">60</span>
                                     <span> seconds</span>
                                 </div>
-                                <button type="button" id="resend-otp-btn" class="btn-secondary mt-2" style="display: none;">
+                                <button type="button" id="resend-otp-btn" class="btn-secondary mt-2 hidden">
                                     Resend Code
                                 </button>
                             </div>
                         </div>
                         <div class="flex flex-col gap-2">
-                            <button type="submit" class="btn-primary w-full" id="verify-otp-btn">
+                            <button type="submit" class="btn-primary w-full" id="verify-reset-otp-btn">
                                 Verify Code
                             </button>
-                            <button type="button" class="btn-secondary w-full" id="back-to-forgot" onclick="
-                                document.getElementById('otp-form').style.display = 'none';
-                                document.getElementById('forgot-password-form').style.display = 'block';
-                                document.getElementById('login-form').style.display = 'none';
-                                document.getElementById('reset-password-form').style.display = 'none';
-                            ">
+                            <button type="button" class="btn-secondary w-full" id="back-to-forgot-from-otp">
                                 Back
                             </button>
                         </div>
@@ -135,7 +125,7 @@
                 </form>
 
                 <!-- Form 4: Set New Password -->
-                <form id="reset-password-form" class="login-form-container" style="display: none;">
+                <form id="reset-password-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
                             <div class="heading5 mb-2">Set New Password</div>
@@ -143,27 +133,22 @@
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="new-password" class="form-label">New Password *</label>
-                            <input class="form-input" id="new-password" type="password" placeholder="Enter new password" required />
-                            <div class="error-message" id="new-password-error"></div>
+                            <input class="form-input" id="reset-new-password" type="password" placeholder="Enter new password" autocomplete="new-password" required />
+                            <div class="error-message" id="new-password-error" role="alert" aria-live="polite"></div>
                             <div class="password-requirements text-xs text-gray-500 mt-1">
                                 Password must be at least 8 characters with uppercase, lowercase, number, and special character.
                             </div>
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="confirm-password" class="form-label">Confirm Password *</label>
-                            <input class="form-input" id="confirm-password" type="password" placeholder="Confirm new password" required />
-                            <div class="error-message" id="confirm-password-error"></div>
+                            <input class="form-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" autocomplete="new-password" required />
+                            <div class="error-message" id="confirm-password-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="flex flex-col gap-2">
-                            <button type="submit" class="btn-primary w-full" id="reset-password-btn">
+                            <button type="submit" class="btn-primary w-full" id="reset-password-submit-btn">
                                 Reset Password
                             </button>
-                            <button type="button" class="btn-secondary w-full" id="back-to-otp" onclick="
-                                document.getElementById('reset-password-form').style.display = 'none';
-                                document.getElementById('otp-form').style.display = 'block';
-                                document.getElementById('login-form').style.display = 'none';
-                                document.getElementById('forgot-password-form').style.display = 'none';
-                            ">
+                            <button type="button" class="btn-secondary w-full" id="back-to-forgot-password">
                                 Back
                             </button>
                         </div>
