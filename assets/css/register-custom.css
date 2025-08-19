@@ -146,3 +146,48 @@
         font-size: 1rem;
     }
 }
+/* ===== Buttons ===== */
+/* Primary register button: show background even without hover */
+#registerBtn.button-main {
+    background: #c9ef8a;          /* adjust to your brand green */
+    border: 1px solid #b2df72;
+    color: #0f172a;
+  }
+  #registerBtn.button-main:hover { filter: brightness(0.96); }
+  
+  /* Keep right-side LOGIN button dark (old style) */
+  .right .button-main {
+    background: #111827;
+    color: #ffffff;
+    border: 1px solid #111827;
+  }
+  .right .button-main:hover { filter: brightness(1.08); }
+  
+  /* Loading state controlled by JS .loading class */
+  #registerBtn .btn-loading,
+  #verifyOtpBtn .btn-loading { display: none; }
+  #registerBtn.loading .btn-loading,
+  #verifyOtpBtn.loading .btn-loading { display: inline-flex; align-items: center; }
+  #registerBtn.loading .btn-text,
+  #verifyOtpBtn.loading .btn-text { display: none; }
+  
+  /* ===== Password three dots ===== */
+  .pw-dots {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .pw-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: #e5e7eb;          /* gray-200 */
+    border: 1px solid #d1d5db;    /* gray-300 */
+    display: inline-block;
+  }
+  .pw-dot.active {
+    background: #10b981;          /* green-500 */
+    border-color: #10b981;
+    box-shadow: 0 0 0 2px rgba(16,185,129,.15);
+  }
+  
