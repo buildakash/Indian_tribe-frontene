@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-buttons { margin: 20px 0; }
+        button { margin: 5px; padding: 10px 15px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .status { margin: 20px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Popup Modal Test</h1>
+    
+    <div class="test-buttons">
+        <button onclick="showPopup()">Show Popup</button>
+        <button onclick="hidePopup()">Hide Popup</button>
+        <button onclick="clearStorage()">Clear Storage</button>
+        <button onclick="checkStatus()">Check Status</button>
+    </div>
+    
+    <div class="status" id="status">
+        Status: Ready
+    </div>
+    
+    <!-- Include the modal from index.html -->
+    <div class="modal-newsletter">
+        <div class="container h-full flex items-center justify-center w-full">
+            <div class="modal-newsletter-main max-w-4xl w-full mx-4">
+                <div class="main-content flex rounded-[20px] overflow-hidden w-full max-h-[650px]">
+                    <div class="left lg:w-1/2 sm:w-2/5 max-sm:hidden bg-green flex flex-col items-center justify-center gap-5 py-14">
+                        <div class="text-xs font-semibold uppercase text-center">Special Offer</div>
+                        <div class="lg:text-[70px] text-4xl lg:leading-[78px] leading-[42px] font-bold uppercase text-center">Black<br />Fridays</div>
+                        <div class="text-button-uppercase text-center">New customers save <span class="text-red">30%</span> with the code</div>
+                        <div class="text-button-uppercase text-red bg-white py-2 px-4 rounded-lg">GET20off</div>
+                        <div class="button-main w-fit bg-black text-white hover:bg-white uppercase">Copy coupon code</div>
+                    </div>
+                    <div class="right lg:w-1/2 sm:w-3/5 w-full bg-white p-8 relative overflow-y-auto max-h-[650px]">
+                        <div class="close-newsletter-btn w-10 h-10 flex items-center justify-center border border-line rounded-full absolute right-5 top-5 cursor-pointer z-10">
+                            <i class="ph-bold ph-x text-xl">×</i>
+                        </div>
+                        
+                        <div class="pt-8">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">Test Popup</h2>
+                            <p>This is a test popup to verify functionality.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPopup() {
+            const modal = document.querySelector('.modal-newsletter');
+            const modalMain = document.querySelector('.modal-newsletter-main');
+            
+            if (modal && modalMain) {
+                modal.style.display = 'flex';
+                modalMain.classList.add('open');
+                updateStatus('Popup shown');
+            } else {
+                updateStatus('Modal elements not found');
+            }
+        }
+        
+        function hidePopup() {
+            const modal = document.querySelector('.modal-newsletter');
+            const modalMain = document.querySelector('.modal-newsletter-main');
+            
+            if (modal && modalMain) {
+                modal.style.display = 'none';
+                modalMain.classList.remove('open');
+                updateStatus('Popup hidden');
+            }
+        }
+        
+        function clearStorage() {
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('popupSeen');
+            updateStatus('Local storage cleared');
+        }
+        
+        function checkStatus() {
+            const userLoggedIn = localStorage.getItem('userLoggedIn');
+            const popupSeen = localStorage.getItem('popupSeen');
+            const modal = document.querySelector('.modal-newsletter');
+            const modalMain = document.querySelector('.modal-newsletter-main');
+            
+            let status = `Storage: userLoggedIn=${userLoggedIn}, popupSeen=${popupSeen}`;
+            status += `<br>Modal display: ${modal ? modal.style.display : 'not found'}`;
+            status += `<br>Modal main class: ${modalMain ? modalMain.className : 'not found'}`;
+            
+            updateStatus(status);
+        }
+        
+        function updateStatus(message) {
+            document.getElementById('status').innerHTML = message;
+        }
+        
+        // Auto-show popup after 1 second for testing
+        setTimeout(() => {
+            showPopup();
+        }, 1000);
+    </script>
+</body>
+</html>
