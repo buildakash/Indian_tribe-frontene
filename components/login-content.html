@@ -36,24 +36,16 @@
                 <div id="error-message" class="error-message" role="alert" aria-live="polite"></div>
 
                 <!-- Form 1: Login -->
-                <div id="login-header">
-                    <div class="heading4 mb-6">Login</div>
-                </div>
                 <form id="login-form" class="login-form-container">
                     <div class="flex flex-col gap-3">
                         <div class="form-group flex flex-col gap-1">
-                            <label for="login-email" class="form-label">Email Address *</label>
+                            <label for="login-email" class="form-label">Email Address *</nlabel>
                             <input class="form-input" id="login-email" type="email" placeholder="Enter your email address" autocomplete="email" required />
                             <div class="error-message" id="login-email-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="login-password" class="form-label">Password *</label>
-                            <div class="relative">
-                                <input class="form-input pr-10" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
-                                <button type="button" id="toggle-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                    <i class="ph ph-eye text-lg">zzz</i>
-                                </button>
-                            </div>
+                            <input class="form-input" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
                             <div class="error-message" id="login-passrword-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="flex items-center justify-between mb-2">
@@ -69,123 +61,10 @@
                         <button type="submit" class="btn-primary w-full mt-2" id="login-submit-btn">
                             Login
                         </button>
-                        <div class="text-center mt-2">
-                            <p class="text-sm text-gray-600">
-                                Don't have an account? 
-                                <button type="button" id="show-signup-form" class="text-blue-600 hover:underline font-medium">
-                                    Create account
-                                </button>
-                            </p>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- Form 1.5: Signup -->
-                <div id="signup-header" class="hidden">
-                    <div class="heading4 mb-6">Create Account</div>
-                </div>
-                <form id="signup-form" class="login-form-container hidden">
-                    <div class="flex flex-col gap-3">
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="signup-name" class="form-label">Full Name *</label>
-                            <input class="form-input" id="signup-name" type="text" placeholder="Enter your full name" autocomplete="name" required />
-                        </div>
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="signup-email" class="form-label">Email Address *</label>
-                            <input class="form-input" id="signup-email" type="email" placeholder="Enter your email address" autocomplete="email" required />
-                        </div>
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="signup-phone" class="form-label">Phone Number *</label>
-                            <input class="form-input" id="signup-phone" type="tel" placeholder="Enter 10 digit phone number" maxlength="10" pattern="[0-9]{10}" autocomplete="tel" required />
-                        </div>
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="signup-password" class="form-label">Password *</label>
-                            <div class="relative">
-                                <input class="form-input pr-10" id="signup-password" type="password" placeholder="Create a password" autocomplete="new-password" required />
-                                <button type="button" id="toggle-signup-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                    <i class="ph ph-eye text-lg">👁️</i>
-                                </button>
-                            </div>
-                            <div id="password-strength" class="text-xs mt-1"></div>
-                        </div>
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="signup-confirm-password" class="form-label">Confirm Password *</label>
-                            <div class="relative">
-                                <input class="form-input pr-10" id="signup-confirm-password" type="password" placeholder="Confirm your password" autocomplete="new-password" required />
-                                <button type="button" id="toggle-signup-confirm-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                    <i class="ph ph-eye text-lg">👁️</i>
-                                </button>
-                            </div>
-                            <div id="confirm-password-indicator" class="text-xs mt-1"></div>
-                        </div>
-                        <div class="flex items-start mt-2">
-                            <input type="checkbox" id="agree-terms" class="mr-2 mt-1" required />
-                            <label for="agree-terms" class="text-sm text-gray-600">
-                                I agree to the <a href="#" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a>
-                            </label>
-                        </div>
-                        <button type="submit" class="btn-primary w-full mt-2" id="signup-submit-btn">
-                            Create Account
-                        </button>
-                        <div class="text-center mt-2">
-                            <p class="text-sm text-gray-600">
-                                Already have an account? 
-                                <button type="button" id="show-login-form" class="text-blue-600 hover:underline font-medium">
-                                    Sign in
-                                </button>
-                            </p>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- Form 1.75: OTP Verification for Signup -->
-                <div id="otp-header" class="hidden">
-                    <div class="heading4 mb-6">Verify Your Email</div>
-                </div>
-                <form id="otp-form" class="login-form-container hidden">
-                    <div class="flex flex-col gap-5">
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="ph ph-envelope-simple text-2xl text-blue-600">📧</i>
-                            </div>
-                            <div class="heading5 mb-2">Verify Your Email</div>
-                            <p class="text-sm text-gray-600 mb-2">We've sent a 6-digit code to your email</p>
-                            <p class="text-sm font-medium text-gray-800" id="otp-email-display"></p>
-                        </div>
-                        <div class="otp-container">
-                            <div class="otp-inputs flex justify-center gap-3 mb-4">
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-1" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-2" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-3" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-4" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-5" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="otp-input-6" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                            </div>
-                            <div class="text-center space-y-3">
-                                <div id="otp-timer" class="text-sm text-gray-600">
-                                    <span id="timer-text">Resend code in </span>
-                                    <span id="timer-countdown" class="font-semibold text-blue-600">02:00</span>
-                                </div>
-                                <button type="button" id="resend-otp-btn" class="btn-secondary hidden">
-                                    Didn't receive the code? Resend
-                                </button>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-primary w-full" id="verify-otp-btn">
-                            Verify OTP
-                        </button>
-                        <div class="text-center">
-                            <button type="button" id="back-to-signup" class="text-sm text-gray-600 hover:text-gray-800">
-                                ← Back to signup
-                            </button>
-                        </div>
                     </div>
                 </form>
 
                 <!-- Form 2: Forgot Password -->
-                <div id="forgot-password-header" class="hidden">
-                    <div class="heading4 mb-6">Forgot Password</div>
-                </div>
                 <form id="forgot-password-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
@@ -209,9 +88,6 @@
                 </form>
 
                 <!-- Form 3: OTP Verification -->
-                <div id="reset-otp-header" class="hidden">
-                    <div class="heading4 mb-6">Verify Reset Code</div>
-                </div>
                 <form id="reset-otp-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
@@ -249,9 +125,6 @@
                 </form>
 
                 <!-- Form 4: Set New Password -->
-                <div id="reset-password-header" class="hidden">
-                    <div class="heading4 mb-6">Set New Password</div>
-                </div>
                 <form id="reset-password-form" class="login-form-container hidden">
                     <div class="flex flex-col gap-5">
                         <div>
@@ -260,28 +133,16 @@
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="new-password" class="form-label">New Password *</label>
-                            <div class="relative">
-                                <input class="form-input pr-10" id="reset-new-password" type="password" placeholder="Enter new password" autocomplete="new-password" required />
-                                <button type="button" id="toggle-reset-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                    <i class="ph ph-eye text-lg">👁️</i>
-                                </button>
-                            </div>
+                            <input class="form-input" id="reset-new-password" type="password" placeholder="Enter new password" autocomplete="new-password" required />
                             <div class="error-message" id="new-password-error" role="alert" aria-live="polite"></div>
-                            <div id="reset-password-strength" class="text-xs mt-1"></div>
                             <div class="password-requirements text-xs text-gray-500 mt-1">
                                 Password must be at least 8 characters with uppercase, lowercase, number, and special character.
                             </div>
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="confirm-password" class="form-label">Confirm Password *</label>
-                            <div class="relative">
-                                <input class="form-input pr-10" id="reset-confirm-password" type="password" placeholder="Confirm new password" autocomplete="new-password" required />
-                                <button type="button" id="toggle-reset-confirm-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                    <i class="ph ph-eye text-lg">👁️</i>
-                                </button>
-                            </div>
+                            <input class="form-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" autocomplete="new-password" required />
                             <div class="error-message" id="confirm-password-error" role="alert" aria-live="polite"></div>
-                            <div id="reset-confirm-password-indicator" class="text-xs mt-1"></div>
                         </div>
                         <div class="flex flex-col gap-2">
                             <button type="submit" class="btn-primary w-full" id="reset-password-submit-btn">
@@ -301,7 +162,7 @@
                     <div class="heading4">New Customer?</div>
                     <div class="mt-2 text-secondary">Be part of our growing family of new customers! Join us today and unlock a world of exclusive benefits, offers, and personalized experiences.</div>
                     <div class="block-button md:mt-7 mt-4">
-                        <button type="button" id="show-signup-form-right" class="button-main">Create Account</button>
+                        <a href="register.html" class="button-main">Register</a>
                     </div>
                 </div>
             </div>
@@ -309,4 +170,3 @@
         </div>
     </div>
 </div>
-
