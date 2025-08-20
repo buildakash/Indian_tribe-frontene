@@ -5,7 +5,9 @@
 
 class AuthSystem {
     constructor() {
-        this.apiBaseUrl = 'http://localhost:8000/routes/auth'; // PHP API base URL
+        // Use the same server for both frontend and backend
+        this.apiBaseUrl = 'http://localhost/Indian%20Tribe/backend_php/routes/auth'; 
+        // this.apiBaseUrl = 'http://localhost:8000/api/auth';
         this.currentUser = null;
         this.currentEmail = null; // Store email for OTP process
         this.init();
@@ -1103,12 +1105,6 @@ class AuthSystem {
         const showForgotPasswordBtn = document.getElementById('show-forgot-password-form');
         if (showForgotPasswordBtn) {
             showForgotPasswordBtn.addEventListener('click', () => this.showForgotPasswordForm());
-        }
-
-        // Back to login from forgot password
-        const backToLoginFromForgotBtn = document.getElementById('back-to-login-from-forgot');
-        if (backToLoginFromForgotBtn) {
-            backToLoginFromForgotBtn.addEventListener('click', () => this.showLoginForm());
         }
 
         // Back to login from forgot password

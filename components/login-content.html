@@ -31,22 +31,21 @@
             <div class="left md:w-1/2 w-full lg:pr-[60px] md:pr-[40px] md:border-r border-line">
                 <div class="heading4 mb-6">Login</div>
 
-                <!-- Global Success/Error Messages -->
-                <div id="success-message" class="success-message" role="status" aria-live="polite"></div>
-                <div id="error-message" class="error-message" role="alert" aria-live="polite"></div>
-
                 <!-- Form 1: Login -->
                 <form id="login-form" class="login-form-container">
                     <div class="flex flex-col gap-3">
                         <div class="form-group flex flex-col gap-1">
-                            <label for="login-email" class="form-label">Email Address *</nlabel>
+                            <label for="login-email" class="form-label">Email Address *</label>
                             <input class="form-input" id="login-email" type="email" placeholder="Enter your email address" autocomplete="email" required />
-                            <div class="error-message" id="login-email-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="login-password" class="form-label">Password *</label>
-                            <input class="form-input" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
-                            <div class="error-message" id="login-passrword-error" role="alert" aria-live="polite"></div>
+                            <div class="relative">
+                                <input class="form-input" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
+                                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" id="toggle-login-password" aria-label="Toggle password visibility">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center">
@@ -74,7 +73,6 @@
                         <div class="form-group flex flex-col gap-1">
                             <label for="forgot-email" class="form-label">Email Address *</label>
                             <input class="form-input" id="forgot-email" type="email" placeholder="Enter your email address" required />
-                            <div class="error-message" id="forgot-email-error" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="flex flex-col gap-2">
                             <button type="submit" class="btn-primary w-full" id="forgot-password-submit-btn">
@@ -101,12 +99,10 @@
                                 <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-3" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
                                 <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-4" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
                             </div>
-                            <div class="error-message text-center" id="reset-otp-error" role="alert" aria-live="polite"></div>
                             <div class="otp-timer-section flex flex-col items-center mt-2">
                                 <div id="timer-display" class="timer-display text-sm">
                                     <span id="timer-text">Resend code in </span>
-                                    <span id="timer-countdown">60</span>
-                                    <span> seconds</span>
+                                    <span id="timer-countdown">02:00</span>
                                 </div>
                                 <button type="button" id="resend-otp-btn" class="btn-secondary mt-2 hidden">
                                     Resend Code
@@ -114,7 +110,8 @@
                             </div>
                         </div>
                         <div class="flex flex-col gap-2">
-                            <button type="submit" class="btn-primary w-full" id="verify-reset-otp-btn">
+                            <!-- This button is hidden because the form now auto-submits, but kept for structure -->
+                            <button type="submit" class="btn-primary w-full hidden" id="verify-reset-otp-btn">
                                 Verify Code
                             </button>
                             <button type="button" class="btn-secondary w-full" id="back-to-forgot-from-otp">
@@ -133,16 +130,23 @@
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="new-password" class="form-label">New Password *</label>
-                            <input class="form-input" id="reset-new-password" type="password" placeholder="Enter new password" autocomplete="new-password" required />
-                            <div class="error-message" id="new-password-error" role="alert" aria-live="polite"></div>
-                            <div class="password-requirements text-xs text-gray-500 mt-1">
-                                Password must be at least 8 characters with uppercase, lowercase, number, and special character.
+                            <div class="relative">
+                                <input class="form-input" id="reset-new-password" type="password" placeholder="Enter new password" autocomplete="new-password" required />
+                                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" id="toggle-reset-password" aria-label="Toggle password visibility">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </button>
                             </div>
+                            <div id="reset-password-strength"></div>
                         </div>
                         <div class="form-group flex flex-col gap-1">
                             <label for="confirm-password" class="form-label">Confirm Password *</label>
-                            <input class="form-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" autocomplete="new-password" required />
-                            <div class="error-message" id="confirm-password-error" role="alert" aria-live="polite"></div>
+                             <div class="relative">
+                                <input class="form-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" autocomplete="new-password" required />
+                                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" id="toggle-reset-confirm-password" aria-label="Toggle password visibility">
+                                    <i class="ph ph-eye text-lg"></i>
+                                </button>
+                            </div>
+                            <div id="reset-confirm-password-indicator" class="text-xs mt-1"></div>
                         </div>
                         <div class="flex flex-col gap-2">
                             <button type="submit" class="btn-primary w-full" id="reset-password-submit-btn">
