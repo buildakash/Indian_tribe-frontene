@@ -9,6 +9,9 @@ class AuthSystem {
         this.currentUser = null;
         this.currentEmail = null; // Store email for OTP process
         this.init();
+        
+        // Debug: Log API configuration
+        console.log('AuthSystem initialized with API:', this.apiBaseUrl);
     }
 
     init() {
@@ -966,6 +969,12 @@ class AuthSystem {
             showLoginBtn.addEventListener('click', () => this.switchToLogin());
         }
 
+        // Right column signup button
+        const showSignupBtnRight = document.getElementById('show-signup-form-right');
+        if (showSignupBtnRight) {
+            showSignupBtnRight.addEventListener('click', () => this.switchToSignup());
+        }
+
         // Close modal
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
@@ -1102,6 +1111,12 @@ class AuthSystem {
             backToLoginFromForgotBtn.addEventListener('click', () => this.showLoginForm());
         }
 
+        // Back to login from forgot password
+        const backToLoginFromForgotBtn = document.getElementById('back-to-login-from-forgot');
+        if (backToLoginFromForgotBtn) {
+            backToLoginFromForgotBtn.addEventListener('click', () => this.showLoginForm());
+        }
+
         // Back to forgot password from reset password
         const backToForgotPasswordBtn = document.getElementById('back-to-forgot-password');
         if (backToForgotPasswordBtn) {
@@ -1109,9 +1124,21 @@ class AuthSystem {
         }
 
         // Back to forgot password from reset OTP
+        const backToForgotFromResetOTPBtn = document.getElementById('back-to-forgot-from-otp');
+        if (backToForgotFromResetOTPBtn) {
+            backToForgotFromResetOTPBtn.addEventListener('click', () => this.showForgotPasswordForm());
+        }
+
+        // Back to forgot password from reset OTP
         const backToForgotFromOTPBtn = document.getElementById('back-to-forgot-from-otp');
         if (backToForgotFromOTPBtn) {
             backToForgotFromOTPBtn.addEventListener('click', () => this.showForgotPasswordForm());
+        }
+
+        // Back to signup from OTP form
+        const backToSignupBtn = document.getElementById('back-to-signup');
+        if (backToSignupBtn) {
+            backToSignupBtn.addEventListener('click', () => this.showSignupForm());
         }
 
         // Setup reset password OTP input behavior
@@ -1126,6 +1153,18 @@ class AuthSystem {
         // Password visibility toggles for reset password
         this.togglePasswordVisibility('reset-new-password', 'toggle-reset-password');
         this.togglePasswordVisibility('reset-confirm-password', 'toggle-reset-confirm-password');
+
+        // Resend OTP button
+        const resendOtpBtn = document.getElementById('resend-otp-btn');
+        if (resendOtpBtn) {
+            resendOtpBtn.addEventListener('click', async () => {
+                try {
+                    await this.resendOTP();
+                } catch (error) {
+                    // Error already handled in resendOTP
+                }
+            });
+        }
     }
     
     // Setup phone input restrictions
@@ -1641,5 +1680,26 @@ class AuthSystem {
 
 // Initialize authentication system when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing AuthSystem...');
     window.authSystem = new AuthSystem();
+    console.log('AuthSystem initialized successfully!');
+    
+    // Debug: Check if all forms are found
+    setTimeout(() => {
+        const forms = {
+            login: document.getElementById('login-form'),
+            signup: document.getElementById('signup-form'),
+            otp: document.getElementById('otp-form'),
+            forgotPassword: document.getElementById('forgot-password-form'),
+            resetOtp: document.getElementById('reset-otp-form'),
+            resetPassword: document.getElementById('reset-password-form')
+        };
+        
+        console.log('Forms found:', forms);
+        
+        // Check if auth system is working
+        if (window.authSystem) {
+            console.log('AuthSystem methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.authSystem)));
+        }
+    }, 1000);
 }); 
