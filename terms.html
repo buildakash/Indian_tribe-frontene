@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terms & Conditions | Indian Tribe</title>
+    <link rel="shortcut icon" href="./assets/images/logo/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./assets/css/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="./dist/output-scss.css" />
+    <link rel="stylesheet" href="./dist/output-tailwind.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkfWcKqj8R5hXPSbR6v9QfGZQ8G4wY4XGZk2Y9wQJf8b+3r9e2z5y3Uqw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <!-- Placeholders for Components -->
+    <div id="top-nav-placeholder"></div>
+    <div id="header-placeholder"></div>
+    <div id="breadcrumb-placeholder"></div>
+    <div id="terms-content"></div>
+    <div id="footer-placeholder"></div>
+    <div id="modals-placeholder"></div>
+    <!-- Scroll to Top Button -->
+    <a class="scroll-to-top-btn" href="#top-nav"
+      ><i class="ph-bold ph-caret-up"></i
+    ></a>
+    <!-- SCRIPT TO LOAD COMPONENTS -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const loadComponent = (component, placeholderId) => {
+          fetch(component)
+            .then((response) =>
+              response.ok
+                ? response.text()
+                : Promise.reject("Component not found.")
+            )
+            .then((data) => {
+              document.getElementById(placeholderId).innerHTML = data;
+            })
+            .catch((error) =>
+              console.error(`Error loading ${component}:`, error)
+            );
+        };
+
+        const components = [
+          { url: "components/top-nav.html", id: "top-nav-placeholder" },
+          { url: "components/header.html", id: "header-placeholder" },
+          {
+            url: "components/terms-breadcrumb.html",
+            id: "breadcrumb-placeholder",
+          },
+          { url: "components/terms-content.html", id: "terms-content" },
+          { url: "components/footer.html", id: "footer-placeholder" },
+          { url: "components/modals.html", id: "modals-placeholder" },
+        ];
+
+        // Use Promise.all to wait for all components to be loaded
+        Promise.all(
+          components.map((c) => fetch(c.url).then((res) => res.text()))
+        )
+          .then((htmls) => {
+            // Inject HTML into placeholders
+            htmls.forEach((html, i) => {
+              document.getElementById(components[i].id).outerHTML = html;
+            });
+
+            // NOW that all HTML is loaded, load your main scripts
+            const scripts = [
+              "./assets/js/phosphor-icons.js",
+              "./assets/js/swiper-bundle.min.js",
+              "./assets/js/main.js",
+              "./assets/js/toast.js",
+              "./assets/js/config.js",
+              "./assets/js/utils.js",
+              "./assets/js/validators.js",
+              "./assets/js/api.auth.js",
+              "./assets/js/ui.auth.js",
+              "./assets/js/controller.auth.js",
+            ];
+
+            scripts.forEach((src) => {
+              const script = document.createElement("script");
+              script.src = src;
+              document.body.appendChild(script);
+            });
+          })
+          .catch((error) => console.error("Error loading components:", error));
+      });
+    </script>
+  </body>
+</html>
