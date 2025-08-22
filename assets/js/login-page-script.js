@@ -1,10 +1,7 @@
 /* =================================================================
-   Login & Forgot Password Handler (FINAL POLISHED VERSION)
-   - Adds password visibility toggles.
-   - Adds auto-submit on OTP form completion.
-   - Adds real-time password strength validation for reset form.
-   - Uses window.toast for all user feedback.
-   - Design and HTML are untouched.
+   Login & Forgot Password Handler (FINAL POLISHED V3 - UI Tweaks)
+   - Manages visibility of the OTP 'Verify' button for a cleaner look.
+   - All other functionality is preserved.
 ================================================================= */
 
 (function () {
@@ -45,18 +42,15 @@
     const btnToggleResetPass = document.getElementById('toggle-reset-password');
     const btnToggleResetConfirm = document.getElementById('toggle-reset-confirm-password');
 
-    // ----- Fields -----
+    // ----- Fields & Indicators -----
     const inputLoginEmail  = document.getElementById('login-email');
     const inputLoginPass   = document.getElementById('login-password');
     const inputForgotEmail = document.getElementById('forgot-email');
     const otpInputs        = Array.from(document.querySelectorAll('#reset-otp-container .otp-input'));
     const inputNewPass     = document.getElementById('reset-new-password');
     const inputConfirmPass = document.getElementById('reset-confirm-password');
-
     const strengthIndicator = document.getElementById('reset-password-strength');
     const confirmIndicator = document.getElementById('reset-confirm-password-indicator');
-
-    // ----- Timer -----
     const timerWrap   = document.getElementById('timer-display');
     const timerCount  = document.getElementById('timer-countdown');
 
@@ -66,10 +60,30 @@
     // ---------- Helpers ----------
     const hide = el => el && el.classList.add('hidden');
     const show = el => el && el.classList.remove('hidden');
+
+    function setButtonLoadingState(button, isLoading) {
+        if (!button) return;
+        const btnText = button.querySelector('.btn-text');
+        const btnLoading = button.querySelector('.btn-loading');
+
+        button.disabled = isLoading;
+        if (isLoading) {
+            if (btnText) btnText.classList.add('hidden');
+            if (btnLoading) btnLoading.classList.remove('hidden');
+        } else {
+            if (btnText) btnText.classList.remove('hidden');
+            if (btnLoading) btnLoading.classList.add('hidden');
+        }
+    }
     
     function switchTo(formEl) {
       [loginForm, forgotForm, otpForm, resetForm].forEach(hide);
       show(formEl);
+
+      // Hide the verify button by default when switching to the OTP form
+      if (formEl === otpForm) {
+          hide(btnOtpVerify);
+      }
     }
 
     function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim()); }
@@ -88,14 +102,8 @@
       for (const key in payload) {
           formData.append(key, payload[key]);
       }
-
-      const res = await fetch(url, {
-        method: 'POST',
-        body: formData 
-      });
-
+      const res = await fetch(url, { method: 'POST', body: formData });
       const result = await res.json();
-
       if (!res.ok || result.status !== 'success') {
         const errorMsg = result.message || `Request failed with status ${res.status}`;
         throw new Error(errorMsg);
@@ -106,6 +114,7 @@
     // ---------- OTP input UX ----------
     otpInputs.forEach((input, idx) => {
       input.addEventListener('input', e => {
+        show(btnOtpVerify);
         e.target.value = e.target.value.replace(/\D/g, '').slice(0, 1);
         if (e.target.value && idx < otpInputs.length - 1) {
           otpInputs[idx + 1].focus();
@@ -122,6 +131,7 @@
         e.preventDefault();
         const data = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, otpInputs.length);
         if (data.length > 0) {
+          show(btnOtpVerify);
           data.split('').forEach((ch, i) => { if (otpInputs[i]) otpInputs[i].value = ch; });
           const lastInput = otpInputs[Math.min(data.length - 1, otpInputs.length - 1)];
           if(lastInput) lastInput.focus();
@@ -162,7 +172,21 @@
           hasDigit: /[0-9]/.test(password),
           hasSpec: /[^A-Za-z0-9]/.test(password)
       };
-      checks.allMet = Object.values(checks).every(Boolean);
+      const score = Object.values(checks).filter(Boolean).length;
+      let strengthText = 'Very Weak';
+      let strengthClass = 'text-red-500';
+
+      if (score >= 5) {
+          strengthText = 'Strong';
+          strengthClass = 'text-green-600';
+      } else if (score >= 3) {
+          strengthText = 'Fair';
+          strengthClass = 'text-yellow-500';
+      }
+      
+      checks.allMet = score === 5;
+      checks.strengthText = strengthText;
+      checks.strengthClass = strengthClass;
       return checks;
     }
     
@@ -173,7 +197,7 @@
           return;
       }
 
-      const { len, hasUpper, hasLower, hasDigit, hasSpec } = calculatePasswordStrength(password);
+      const { len, hasUpper, hasLower, hasDigit, hasSpec, strengthText, strengthClass } = calculatePasswordStrength(password);
       const feedback = [
           { met: len,      text: 'At least 8 characters' },
           { met: hasUpper, text: 'Contains uppercase letter' },
@@ -184,6 +208,7 @@
       
       strengthIndicator.innerHTML = `
           <div class="space-y-1 text-xs bg-gray-50 p-3 rounded-lg border mt-2">
+              <div class="font-semibold mb-2 ${strengthClass}">Password Strength: ${strengthText}</div>
               ${feedback.map(item => `
                   <div class="${item.met ? 'text-green-600' : 'text-red-600'} flex items-center">
                       <span class="mr-2 text-base">${item.met ? '✓' : '✗'}</span>
@@ -239,21 +264,15 @@
       if (!isValidEmail(email)) { window.toast.error('Please enter a valid email address.'); return; }
       if (!pass) { window.toast.error('Please enter your password.'); return; }
 
-      const btnOld = btnLoginSubmit.textContent;
-      btnLoginSubmit.textContent = 'Logging in...';
-      btnLoginSubmit.disabled = true;
-
+      setButtonLoadingState(btnLoginSubmit, true);
       try {
         const resp = await apiFetch(ROUTES.login, { email, password: pass });
         window.toast.success(resp.message || 'Logged in successfully! Redirecting...');
-        
         setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-
       } catch (err) {
           window.toast.error(err.message || 'Login failed. Please check your credentials.');
       } finally {
-        btnLoginSubmit.textContent = btnOld;
-        btnLoginSubmit.disabled = false;
+          setButtonLoadingState(btnLoginSubmit, false);
       }
     });
 
@@ -263,10 +282,7 @@
       const email = (inputForgotEmail.value || '').trim();
       if (!isValidEmail(email)) { window.toast.error('Please enter a valid email to reset your password.'); return; }
 
-      const btnOld = btnForgotSubmit.textContent;
-      btnForgotSubmit.textContent = 'Sending...';
-      btnForgotSubmit.disabled = true;
-
+      setButtonLoadingState(btnForgotSubmit, true);
       try {
         const resp = await apiFetch(ROUTES.sendResetCode, { email });
         resetEmail = email;
@@ -277,8 +293,7 @@
       } catch (err) {
           window.toast.error(err.message || 'Unable to send reset code.');
       } finally {
-        btnForgotSubmit.textContent = btnOld;
-        btnForgotSubmit.disabled = false;
+          setButtonLoadingState(btnForgotSubmit, false);
       }
     });
 
@@ -294,7 +309,7 @@
         window.toast.success(resp.message || 'A new code has been sent.');
       } catch (err) {
         window.toast.error(err.message || 'Unable to resend code.');
-        btnResendOtp.disabled = false; // Re-enable on failure
+        btnResendOtp.disabled = false;
       }
     });
 
@@ -304,10 +319,7 @@
       const otp = gatherOtp();
       if (!/^\d{4}$/.test(otp)) { window.toast.error('Please enter the complete 4-digit code.'); return; }
 
-      const btnOld = btnOtpVerify.textContent;
-      btnOtpVerify.textContent = 'Verifying...';
-      btnOtpVerify.disabled = true;
-
+      setButtonLoadingState(btnOtpVerify, true); 
       try {
         const resp = await apiFetch(ROUTES.verifyResetCode, { email: resetEmail, otp });
         window.toast.success(resp.message || 'Code verified! Please set your new password.');
@@ -315,8 +327,7 @@
       } catch (err) {
           window.toast.error(err.message || 'Verification failed. The code may be incorrect or expired.');
       } finally {
-        btnOtpVerify.textContent = btnOld;
-        btnOtpVerify.disabled = false;
+          setButtonLoadingState(btnOtpVerify, false);
       }
     });
 
@@ -336,10 +347,7 @@
           return;
       }
 
-      const btnOld = btnResetSubmit.textContent;
-      btnResetSubmit.textContent = 'Resetting...';
-      btnResetSubmit.disabled = true;
-
+      setButtonLoadingState(btnResetSubmit, true);
       try {
         const resp = await apiFetch(ROUTES.resetPassword, {
           email: resetEmail,
@@ -353,8 +361,7 @@
       } catch (err) {
           window.toast.error(err.message || 'Password reset failed. Please try again.');
       } finally {
-        btnResetSubmit.textContent = btnOld;
-        btnResetSubmit.disabled = false;
+          setButtonLoadingState(btnResetSubmit, false);
       }
     });
 
@@ -366,6 +373,6 @@
 
     // Initial view
     switchTo(loginForm);
-    console.log('Login page flow (polished version) initialized successfully.');
+    console.log('Login page flow (final polished version) initialized successfully.');
   }
 })();

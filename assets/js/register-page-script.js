@@ -1,25 +1,21 @@
-/* -------------------------------------------
-   Registration Form Handler (CORRECTED)
-   - Initializes using the 'components:loaded' event.
-   - Uses the global window.toast system for all notifications.
-   - Uses the correct absolute API path for backend communication.
-   - Design and HTML are untouched.
-------------------------------------------- */
+/* =================================================================
+   Registration Form Handler (FINAL POLISHED & FIXED)
+   - Correctly sends all user data during OTP resend.
+   - Includes stricter, detailed password strength UI with a summary.
+   - Includes all polished features (loading animations, toggles, etc.).
+================================================================= */
 
 // Registration Form Class
 class RegistrationForm {
   constructor() {
-    // <<< FIX: Define the correct, absolute base URL for the API
     this.apiBaseUrl = 'http://localhost/Indian%20Tribe/backend_php/routes/auth';
-
     this.currentStep = 1;
-    this.formData = {};
+    this.formData = {}; // This will hold all user data across steps
     this.otpExpiryTime = null;
     this.otpTimer = null;
 
     this.initializeElements();
     this.bindEvents();
-    this.initializePasswordIndicators();
   }
 
   initializeElements() {
@@ -41,17 +37,15 @@ class RegistrationForm {
     this.verifyOtpBtn  = document.getElementById('verifyOtpBtn');
     this.resendOtpBtn  = document.getElementById('resendOtpBtn');
     this.backToFormBtn = document.getElementById('backToForm');
-
-    // Eye toggle buttons
-    this.togglePasswordBtn        = document.getElementById('togglePassword');
+    this.togglePasswordBtn = document.getElementById('togglePassword');
     this.toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPassword');
 
     // OTP
-    this.otpInputs       = document.querySelectorAll('.otp-digit');
-    this.otpEmail        = document.getElementById('otpEmail');
+    this.otpInputs = document.querySelectorAll('.otp-digit');
+    this.otpEmail = document.getElementById('otpEmail');
     this.otpTimerElement = document.getElementById('otpTimer');
 
-    // Errors
+    // Errors & Indicators
     this.errorElements = {
       name:            document.getElementById('nameError'),
       phone:           document.getElementById('phoneError'),
@@ -59,79 +53,108 @@ class RegistrationForm {
       password:        document.getElementById('passwordError'),
       confirmPassword: document.getElementById('confirmPasswordError'),
     };
-
-    // Password indicator dots
-    this.dotLen  = document.getElementById('dotLen');
-    this.dotCase = document.getElementById('dotCase');
-    this.dotMix  = document.getElementById('dotMix');
+    this.strengthIndicator = document.getElementById('password-strength-indicator');
+    this.confirmIndicator = document.getElementById('confirm-password-indicator');
   }
 
   bindEvents() {
-    // Submit handlers
     this.registrationForm.addEventListener('submit', (e) => this.handleRegistrationSubmit(e));
     this.otpVerification.querySelector('#otpForm').addEventListener('submit', (e) => this.handleOtpSubmit(e));
-
+    
     // Live validation
     this.nameInput.addEventListener('input', () => this.validateName());
     this.phoneInput.addEventListener('input', (e) => this.handlePhoneInput(e));
-    this.phoneInput.addEventListener('keydown', (e) => this.handlePhoneKeydown(e));
     this.emailInput.addEventListener('input', () => this.validateEmail());
-    this.passwordInput.addEventListener('input', () => this.validatePassword());
-    this.confirmPasswordInput.addEventListener('input', () => this.validateConfirmPassword());
+    this.passwordInput.addEventListener('input', () => {
+        this.updatePasswordStrengthUI(this.passwordInput.value);
+        this.checkConfirmPassword();
+    });
+    this.confirmPasswordInput.addEventListener('input', () => this.checkConfirmPassword());
     this.rememberCheckbox.addEventListener('change', () => this.validateTerms());
-
-    // Eye toggles
-    this.togglePasswordBtn.addEventListener('click', () =>
-      this.togglePasswordVisibility(this.passwordInput, this.togglePasswordBtn)
-    );
-    this.toggleConfirmPasswordBtn.addEventListener('click', () =>
-      this.togglePasswordVisibility(this.confirmPasswordInput, this.toggleConfirmPasswordBtn)
-    );
-
-    // OTP input behavior
+    
+    // Toggles
+    this.togglePasswordBtn?.addEventListener('click', () => this.togglePasswordVisibility(this.passwordInput, this.togglePasswordBtn));
+    this.toggleConfirmPasswordBtn?.addEventListener('click', () => this.togglePasswordVisibility(this.confirmPasswordInput, this.toggleConfirmPasswordBtn));
+    
+    // OTP Inputs
     this.otpInputs.forEach((input) => {
       input.addEventListener('input', (e) => this.handleOtpInput(e));
       input.addEventListener('keydown', (e) => this.handleOtpKeydown(e));
-      input.addEventListener('paste', (e) => {
-        e.preventDefault();
-        const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
-        if (!text) return;
-        this.otpInputs.forEach((i) => (i.value = ''));
-        [...text].forEach((ch, idx) => { if (this.otpInputs[idx]) this.otpInputs[idx].value = ch; });
-        const otp = Array.from(this.otpInputs).map((i) => i.value).join('');
-        if (otp.length === 6) this.otpVerification.querySelector('#otpForm').requestSubmit();
-      });
+      input.addEventListener('paste', (e) => this.handleOtpPaste(e));
     });
 
-    // Other buttons
-    this.resendOtpBtn.addEventListener('click', () => this.resendOtp());
-    this.backToFormBtn.addEventListener('click', () => this.showStep(1));
+    // Other Buttons
+    this.resendOtpBtn?.addEventListener('click', () => this.resendOtp());
+    this.backToFormBtn?.addEventListener('click', () => this.showStep(1));
   }
 
-  // ===== Password Indicators (3 dots) =====
-  initializePasswordIndicators() {
-    this.passwordInput.addEventListener('input', () => {
-      const checks = this.calculatePasswordIndicators(this.passwordInput.value || '');
-      this.updatePasswordIndicators(checks);
-    });
+  calculatePasswordStrength(password) {
+    const checks = {
+        len: password.length >= 8,
+        hasLower: /[a-z]/.test(password),
+        hasUpper: /[A-Z]/.test(password),
+        hasDigit: /[0-9]/.test(password),
+        hasSpec: /[^A-Za-z0-9]/.test(password)
+    };
+    const score = Object.values(checks).filter(Boolean).length;
+    let strengthText = 'Very Weak';
+    let strengthClass = 'text-red-500';
+
+    if (score >= 5) {
+        strengthText = 'Strong';
+        strengthClass = 'text-green-600';
+    } else if (score >= 3) {
+        strengthText = 'Fair';
+        strengthClass = 'text-yellow-500';
+    }
+    
+    checks.allMet = score === 5;
+    checks.strengthText = strengthText;
+    checks.strengthClass = strengthClass;
+    return checks;
+  }
+  
+  updatePasswordStrengthUI(password) {
+    if (!this.strengthIndicator) return;
+    if (!password) {
+        this.strengthIndicator.innerHTML = '';
+        return;
+    }
+    const { len, hasUpper, hasLower, hasDigit, hasSpec, strengthText, strengthClass } = this.calculatePasswordStrength(password);
+    const feedback = [
+        { met: len, text: 'At least 8 characters' },
+        { met: hasUpper, text: 'Contains uppercase letter' },
+        { met: hasLower, text: 'Contains lowercase letter' },
+        { met: hasDigit, text: 'Contains a number' },
+        { met: hasSpec, text: 'Contains a special character (!@#...)' },
+    ];
+    
+    this.strengthIndicator.innerHTML = `
+        <div class="space-y-1 text-xs bg-gray-50 p-3 rounded-lg border">
+            <div class="font-semibold mb-2 ${strengthClass}">Password Strength: ${strengthText}</div>
+            ${feedback.map(item => `
+                <div class="${item.met ? 'text-green-600' : 'text-red-600'} flex items-center">
+                    <span class="mr-2 text-base">${item.met ? '✓' : '✗'}</span>
+                    ${item.text}
+                </div>`).join('')}
+        </div>`;
   }
 
-  calculatePasswordIndicators(password) {
-    const len = password.length >= 8;
-    const hasLower = /[a-z]/.test(password);
-    const hasUpper = /[A-Z]/.test(password);
-    const hasDigit = /[0-9]/.test(password);
-    const hasSpec  = /[^A-Za-z0-9]/.test(password);
-    return { len, caseMix: hasLower && hasUpper, numSpec: hasDigit && hasSpec };
+  checkConfirmPassword() {
+    if (!this.confirmIndicator) return;
+    const pass = this.passwordInput.value;
+    const confirmPass = this.confirmPasswordInput.value;
+    if (confirmPass === '') {
+        this.confirmIndicator.innerHTML = '';
+        return;
+    }
+    if (pass === confirmPass) {
+        this.confirmIndicator.innerHTML = '<span class="text-green-500 flex items-center text-xs"><i class="ph ph-check-circle mr-1"></i> Passwords match</span>';
+    } else {
+        this.confirmIndicator.innerHTML = '<span class="text-red-500 flex items-center text-xs"><i class="ph ph-x-circle mr-1"></i> Passwords do not match</span>';
+    }
   }
 
-  updatePasswordIndicators({ len, caseMix, numSpec }) {
-    this.dotLen.classList.toggle('active', !!len);
-    this.dotCase.classList.toggle('active', !!caseMix);
-    this.dotMix.classList.toggle('active', !!numSpec);
-  }
-
-  // ===== Validation =====
   validateName() {
     const v = this.nameInput.value.trim();
     if (v.length < 2) { this.showError('name', 'Name must be at least 2 characters long'); return false; }
@@ -149,29 +172,19 @@ class RegistrationForm {
     this.hideError('email'); return true;
   }
   validatePassword() {
-    const p = this.passwordInput.value || '';
-    const checks = this.calculatePasswordIndicators(p);
-    this.updatePasswordIndicators(checks);
-    const ok = checks.len && checks.caseMix && checks.numSpec;
-    if (!ok) {
-      this.showError('password', 'Password must be 8+ chars and include upper, lower, number, and special.');
-      return false;
-    }
+    const strength = this.calculatePasswordStrength(this.passwordInput.value);
+    if (!strength.allMet) { this.showError('password', 'Password does not meet all requirements.'); return false; }
     this.hideError('password'); return true;
   }
   validateConfirmPassword() {
-    if ((this.passwordInput.value || '') !== (this.confirmPasswordInput.value || '')) {
-      this.showError('confirmPassword', 'Passwords do not match'); return false;
-    }
+    if (this.passwordInput.value !== this.confirmPasswordInput.value) { this.showError('confirmPassword', 'Passwords do not match'); return false; }
     this.hideError('confirmPassword'); return true;
   }
   validateTerms() { return !!this.rememberCheckbox.checked; }
 
-  // ===== Submits =====
   async handleRegistrationSubmit(e) {
     e.preventDefault();
     if (!this.validateAll()) {
-      // <<< FIX: Use the global window.toast system
       window.toast.error('Please fix the errors in the form before submitting.');
       return;
     }
@@ -186,29 +199,21 @@ class RegistrationForm {
     this.setLoading(this.registerBtn, true);
     try {
         const fd = new FormData();
-        // Send all fields to register.php as per your original auth.js
-        for (const key in this.formData) {
-            fd.append(key, this.formData[key]);
-        }
+        for (const key in this.formData) { fd.append(key, this.formData[key]); }
       
-      // <<< FIX: Use the correct, absolute URL
-      const response = await fetch(`${this.apiBaseUrl}/register.php`, {
-        method: 'POST',
-        body: fd,
-      });
-      const result = await response.json();
-      if (result.status === 'success') {
-        window.toast.success(result.message || 'OTP sent successfully!');
-        this.showStep(2);
-        this.startOtpTimer();
-      } else {
-        // <<< FIX: Use the global window.toast system
-        window.toast.error(result.message || 'Registration failed');
-      }
+        const response = await fetch(`${this.apiBaseUrl}/register.php`, { method: 'POST', body: fd });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            window.toast.success(result.message || 'OTP sent successfully!');
+            this.showStep(2);
+            this.startOtpTimer(120);
+        } else {
+            window.toast.error(result.message || 'Registration failed');
+        }
     } catch (err) {
       console.error("Registration Error:", err);
-      // <<< FIX: Use the global window.toast system
-      window.toast.error('A network error occurred. Please check your connection and try again.');
+      window.toast.error('A network error occurred. Please try again.');
     } finally {
       this.setLoading(this.registerBtn, false);
     }
@@ -218,35 +223,26 @@ class RegistrationForm {
     e.preventDefault();
     const otp = Array.from(this.otpInputs).map((i) => i.value).join('');
     if (otp.length !== 6) {
-      // <<< FIX: Use the global window.toast system
       window.toast.error('Please enter the complete 6-digit OTP.');
       return;
     }
     this.setLoading(this.verifyOtpBtn, true);
     try {
       const fd = new FormData();
-      // Append original form data plus the OTP
-      for (const key in this.formData) {
-        fd.append(key, this.formData[key]);
-      }
+      for (const key in this.formData) { fd.append(key, this.formData[key]); }
       fd.append('otp', otp);
       
-      // <<< FIX: Use the correct, absolute URL
-      const response = await fetch(`${this.apiBaseUrl}/verify_otp.php`, {
-        method: 'POST',
-        body: fd,
-      });
+      const response = await fetch(`${this.apiBaseUrl}/verify_otp.php`, { method: 'POST', body: fd });
       const result = await response.json();
+
       if (result.status === 'success') {
         this.showStep(3);
         this.stopOtpTimer();
       } else {
-        // <<< FIX: Use the global window.toast system
         window.toast.error(result.message || 'Invalid OTP');
       }
     } catch (err) {
-        console.error("OTP Verification Error:", err);
-      // <<< FIX: Use the global window.toast system
+      console.error("OTP Verification Error:", err);
       window.toast.error('A network error occurred. Please try again.');
     } finally {
       this.setLoading(this.verifyOtpBtn, false);
@@ -254,67 +250,57 @@ class RegistrationForm {
   }
 
   async resendOtp() {
-    this.resendOtpBtn.disabled = true; // Disable immediately
+    this.resendOtpBtn.disabled = true;
     try {
       const fd = new FormData();
-      fd.append('email', this.formData.email);
-      fd.append('name', this.formData.name); // resend_otp.php might need the name
+      for (const key in this.formData) {
+        fd.append(key, this.formData[key]);
+      }
       
-      // <<< FIX: Use the correct, absolute URL
-      const response = await fetch(`${this.apiBaseUrl}/resend_otp.php`, {
-        method: 'POST',
-        body: fd,
-      });
+      const response = await fetch(`${this.apiBaseUrl}/resend_otp.php`, { method: 'POST', body: fd });
       const result = await response.json();
+
       if (result.status === 'success') {
-        // <<< FIX: Use the global window.toast system
         window.toast.success('A new OTP has been sent!');
-        this.startOtpTimer();
+        this.startOtpTimer(120);
         this.clearOtpInputs();
       } else {
-        // <<< FIX: Use the global window.toast system
         window.toast.error(result.message || 'Unable to resend OTP');
-        this.resendOtpBtn.disabled = false; // Re-enable if failed
+        this.resendOtpBtn.disabled = false;
       }
     } catch (err) {
-        console.error("Resend OTP Error:", err);
-      // <<< FIX: Use the global window.toast system
+      console.error("Resend OTP Error:", err);
       window.toast.error('A network error occurred. Please try again.');
-      this.resendOtpBtn.disabled = false; // Re-enable if failed
+      this.resendOtpBtn.disabled = false;
     }
   }
 
-  // ===== Helpers =====
   validateAll() {
-    // Run all validators and store results. This ensures all error messages show, not just the first one.
-    const isNameValid = this.validateName();
-    const isPhoneValid = this.validatePhone();
-    const isEmailValid = this.validateEmail();
-    const isPasswordValid = this.validatePassword();
-    const isConfirmPasswordValid = this.validateConfirmPassword();
-    const areTermsAgreed = this.validateTerms();
-    if(!areTermsAgreed) {
-      window.toast.error("You must agree to the Terms of Use.");
-    }
-    return isNameValid && isPhoneValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && areTermsAgreed;
+    const checks = [
+        this.validateName(),
+        this.validatePhone(),
+        this.validateEmail(),
+        this.validatePassword(),
+        this.validateConfirmPassword(),
+        this.validateTerms()
+    ];
+    if(!checks[5]) { window.toast.error("You must agree to the Terms of Use."); }
+    return checks.every(Boolean);
   }
 
   showStep(step) {
-    this.currentStep = step;
     this.registrationForm.style.display = (step === 1) ? 'block' : 'none';
     this.otpVerification.style.display  = (step === 2) ? 'block' : 'none';
     this.successMessage.style.display   = (step === 3) ? 'block' : 'none';
-
     if (step === 2) {
       this.otpEmail.textContent = this.formData.email;
       this.clearOtpInputs();
     }
   }
 
-  startOtpTimer() {
-    this.stopOtpTimer(); // Clear any existing timer
-    let timeLeft = 60;
-    this.otpExpiryTime = Date.now() + timeLeft * 1000;
+  startOtpTimer(seconds = 120) {
+    this.stopOtpTimer();
+    this.otpExpiryTime = Date.now() + seconds * 1000;
     this.updateTimer();
     this.resendOtpBtn.disabled = true;
     this.otpTimer = setInterval(() => this.updateTimer(), 1000);
@@ -349,6 +335,17 @@ class RegistrationForm {
     const otp = Array.from(this.otpInputs).map((i) => i.value).join('');
     if (otp.length === 6) this.otpVerification.querySelector('#otpForm').requestSubmit();
   }
+  
+  handleOtpPaste(e) {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+      if (!text) return;
+      this.otpInputs.forEach((i) => (i.value = ''));
+      [...text].forEach((ch, idx) => { if (this.otpInputs[idx]) this.otpInputs[idx].value = ch; });
+      const lastInput = this.otpInputs[Math.min(text.length - 1, 5)];
+      if(lastInput) lastInput.focus();
+      if (text.length === 6) this.otpVerification.querySelector('#otpForm').requestSubmit();
+  }
 
   handleOtpKeydown(e) {
     const input = e.target;
@@ -359,6 +356,7 @@ class RegistrationForm {
   }
 
   togglePasswordVisibility(input, button) {
+    if (!input || !button) return;
     const icon = button.querySelector('i');
     const toText = input.type === 'password';
     input.type = toText ? 'text' : 'password';
@@ -404,15 +402,11 @@ class RegistrationForm {
       this.errorElements[field].classList.add('hidden');
     }
   }
-
-  // <<< FIX: REMOVED the old showNotification function to avoid conflicts.
 }
 
-// <<< FIX: Initialize using the reliable 'components:loaded' event.
 document.addEventListener('components:loaded', () => {
-  // Check if we are on the register page by looking for the form
   if (document.getElementById('registrationForm')) {
     new RegistrationForm();
-    console.log("Registration form initialized successfully.");
+    console.log("Registration form (final polished & fixed version) initialized successfully.");
   }
 });

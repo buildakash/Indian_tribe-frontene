@@ -47,14 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
             '#footer-placeholder': './components/footer.html',
             '#modals-and-helpers-placeholder': './components/modals-and-helpers.html'
         },
-        'index-modular.html': {
-            '#top-nav-placeholder': './components/top-nav.html',
-            '#header-placeholder': './components/header.html',
-            '#mobile-bottom-bar-placeholder': './components/mobile-bottom-bar.html',
-            '#main-content-placeholder': './components/index-main-content.html',
-            '#footer-placeholder': './components/footer.html',
-            '#modals-and-helpers-placeholder': './components/modals-and-helpers.html'
-        }
+        // 'index-modular.html': {
+        //     '#top-nav-placeholder': './components/top-nav.html',
+        //     '#header-placeholder': './components/header.html',
+        //     '#mobile-bottom-bar-placeholder': './components/mobile-bottom-bar.html',
+        //     '#main-content-placeholder': './components/index-main-content.html',
+        //     '#footer-placeholder': './components/footer.html',
+        //     '#modals-and-helpers-placeholder': './components/modals-and-helpers.html'
+        // }
     };
 
     // Get components for current page, fallback to login if not found
