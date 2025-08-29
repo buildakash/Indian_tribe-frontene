@@ -211,9 +211,9 @@
 /* This is for "Login", "Register", "Reset Password" */
 .button-main,
 .btn-primary {
-    background-color: #1a1a1a; /* Dark charcoal / near-black */
-    color: #ffffff;
-    border-color: #1a1a1a;
+    background-color: #c9ef8a; /* Dark charcoal / near-black */
+    color: #000000;
+    border-color: #c9ef8a;
 }
 
 .button-main:hover,
@@ -226,7 +226,7 @@
 /* This is for "Send Reset Code" */
 .btn-green {
     background-color: #d1fec5; /* Light, vibrant green from screenshot */
-    color: #1a1a1a;             /* Dark text for contrast */
+    color: #c9ef8a;             /* Dark text for contrast */
     border-color: #d1fec5;
 }
 
@@ -238,14 +238,14 @@
 /* --- Style 3: White Outline Button (`btn-secondary`) --- */
 /* This is for "Back to Login" */
 .btn-secondary {
-    background-color: #ffffff;
-    color: #1a1a1a;
-    border-color: #1a1a1a; /* Solid black border */
+    background-color: #000000;
+    color: #c9ef8a;
+    border-color: #c9ef8a; /* Solid black border */
 }
 
 .btn-secondary:hover {
     background-color: #f5f5f5; /* Light gray on hover */
-    color: #000000;
+    color: #c9ef8a;
 }
 
 /* --- Disabled State for ALL Buttons --- */
@@ -257,3 +257,88 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+/* --- Style 1: Black Button (Login, Register, Reset Password) --- */
+.button-main,
+.btn-primary {
+    background-color: #c9ef8a; /* Dark charcoal / near-black */
+    color: #000000;
+    border-color: #c9ef8a;
+    transition: all 0.25s ease-in-out;
+}
+
+.button-main:hover,
+.btn-primary:hover {
+    background-color: #c9ef8a; /* True black on hover */
+    border-color: #c9ef8a;
+    color: #000000;            /* Keep text white */
+    transform: translateY(-2px); /* Subtle lift */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+}
+
+/* --- Style 2: Green Button (Send Reset Code) --- */
+.btn-green {
+    background-color: #d1fec5;
+    color: #c9ef8a;
+    border-color: #d1fec5;
+    transition: all 0.25s ease-in-out;
+}
+
+.btn-green:hover {
+    background-color: #b8e8ac;
+    border-color: #b8e8ac;
+    color: #c9ef8a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* --- Style 3: White Outline Button (Back buttons) --- */
+.btn-secondary {
+    background-color: #c9ef8a;
+    color: #000000;
+    border-color: #c9ef8a;
+    transition: all 0.25s ease-in-out;
+}
+
+.btn-secondary:hover {
+    background-color: #c9ef8a;
+    color: #000000;             /* Text switches to white */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+/* Password strength progress bar */
+#password-strength-indicator,
+#reset-password-strength {
+  margin-bottom: 0.5rem;
+}
+
+#password-strength-indicator .text-red-500,
+#reset-password-strength .text-red-500 { color: #ef4444; }
+#password-strength-indicator .text-orange-500,
+#reset-password-strength .text-orange-500 { color: #f97316; }
+#password-strength-indicator .text-yellow-500,
+#reset-password-strength .text-yellow-500 { color: #eab308; }
+#password-strength-indicator .text-green-600,
+#reset-password-strength .text-green-600 { color: #16a34a; }
+/* Password strength blocks */
+#password-strength-indicator {
+    display: flex;
+    gap: 6px;
+  }
+  #password-strength-indicator .bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e5e7eb; /* gray-200 */
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Tooltip */
+  #passwordInfoTooltip {
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+  #passwordInfoTooltip ul li {
+    color: #374151; /* gray-700 */
+  }
+  

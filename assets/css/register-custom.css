@@ -157,9 +157,9 @@
   
   /* Keep right-side LOGIN button dark (old style) */
   .right .button-main {
-    background: #111827;
-    color: #ffffff;
-    border: 1px solid #111827;
+    background: #c9ef8a;
+    color: #000000;
+    border: 1px solid #c9ef8a;
   }
   .right .button-main:hover { filter: brightness(1.08); }
   
@@ -189,5 +189,42 @@
     background: #10b981;          /* green-500 */
     border-color: #10b981;
     box-shadow: 0 0 0 2px rgba(16,185,129,.15);
+  }
+  
+
+  /* Password Strength UI (React-like design) */
+/* Password strength progress bar */
+#password-strength-indicator,
+#reset-password-strength {
+  margin-bottom: 0.5rem;
+}
+
+#password-strength-indicator .text-red-500,
+#reset-password-strength .text-red-500 { color: #ef4444; }
+#password-strength-indicator .text-orange-500,
+#reset-password-strength .text-orange-500 { color: #f97316; }
+#password-strength-indicator .text-yellow-500,
+#reset-password-strength .text-yellow-500 { color: #eab308; }
+#password-strength-indicator .text-green-600,
+#reset-password-strength .text-green-600 { color: #16a34a; }
+/* Password strength blocks */
+#password-strength-indicator {
+    display: flex;
+    gap: 6px;
+  }
+  #password-strength-indicator .bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e5e7eb; /* gray-200 */
+    transition: background-color 0.3s ease;
+  }
+  
+  #passwordInfoTooltip {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(5px);
+  }
+  .group:hover #passwordInfoTooltip {
+    transform: translateY(0);
   }
   
