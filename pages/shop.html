@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Indian Tribe - Shop</title>
+        <link rel="shortcut icon" href="../assets/images/fav.png" type="image/x-icon" />
+        <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css" />
+        <link rel="stylesheet" href="../assets/css/style.css" />
+        <link rel="stylesheet" href="../dist/output-scss.css" />
+        <link rel="stylesheet" href="../dist/output-tailwind.css" />
+    </head>
+
+    <body>
+        <!-- Placeholders for Components -->
+        <div id="top-nav-placeholder"></div>
+        <div id="header-placeholder"></div>
+        <div id="shop-breadcrumb-placeholder"></div>
+        <div id="shop-main-content-placeholder"></div>
+        <div id="footer-placeholder"></div>
+        <div id="modals-placeholder"></div>
+
+        <!-- Scroll to Top Button -->
+        <a class="scroll-to-top-btn" href="#top-nav"><i class="ph-bold ph-caret-up"></i></a>
+
+        <!-- SCRIPT TO LOAD COMPONENTS -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const loadComponent = (component) =>
+                    fetch(component).then((res) => res.ok ? res.text() : Promise.reject(component));
+
+                const components = [
+                    { url: "../components/top-nav.html", id: "top-nav-placeholder" },
+                    { url: "../components/header.html", id: "header-placeholder" },
+                    { url: "../components/shop/breadcrumb.html", id: "shop-breadcrumb-placeholder" },
+                    { url: "../components/shop/main-content.html", id: "shop-main-content-placeholder" },
+                    { url: "../components/footer.html", id: "footer-placeholder" },
+                    { url: "../components/modals.html", id: "modals-placeholder" },
+                ];
+
+                const loadScript = (src) =>
+                    new Promise((resolve, reject) => {
+                        const s = document.createElement("script");
+                        s.src = src;
+                        s.defer = false;
+                        s.onload = resolve;
+                        s.onerror = () => reject(new Error("Failed to load " + src));
+                        document.body.appendChild(s);
+                    });
+
+                // 1) Inject all components
+                Promise.all(components.map(c => loadComponent(c.url)))
+                    .then((htmls) => {
+                        htmls.forEach((html, i) => {
+                            // Replace placeholder with the component HTML
+                            const ph = document.getElementById(components[i].id);
+                            if (ph) ph.outerHTML = html;
+                        });
+                    })
+                    .then(async () => {
+                        // 2) Load shop-specific components
+                        await loadComponent("../components/shop/sidebar.html")
+                            .then(html => {
+                                const ph = document.getElementById("shop-sidebar-placeholder");
+                                if (ph) ph.outerHTML = html;
+                            });
+                        
+                        await loadComponent("../components/shop/product-list.html")
+                            .then(html => {
+                                const ph = document.getElementById("shop-product-list-placeholder");
+                                if (ph) ph.outerHTML = html;
+                            });
+
+                        // 3) Load libraries in strict order
+                        await loadScript("../assets/js/phosphor-icons.js");
+                        await loadScript("../assets/js/swiper-bundle.min.js");
+
+                        // 4) Load your app scripts (order matters if they depend on each other)
+                        await loadScript("../assets/js/main.js");
+                        await loadScript("../assets/js/toast.js");
+                        await loadScript("../assets/js/config.js");
+                        await loadScript("../assets/js/utils.js");
+                        await loadScript("../assets/js/validators.js");
+                        await loadScript("../assets/js/api.auth.js");
+                        await loadScript("../assets/js/ui.auth.js");
+                        await loadScript("../assets/js/controller.auth.js");
+                        await loadScript("../assets/js/shop.js");
+
+                        // 5) Now that DOM has your components and Swiper exists, initialize UI
+                        if (typeof window.initUI === "function") {
+                            window.initUI();
+                        }
+                    })
+                    .catch((err) => console.error("Boot error:", err));
+            });
+        </script>
+    </body>
+</html>
