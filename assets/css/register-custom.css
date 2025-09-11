@@ -194,37 +194,70 @@
 
   /* Password Strength UI (React-like design) */
 /* Password strength progress bar */
+/* === Password strength meter (compact, horizontal, 5 blocks) === */
 #password-strength-indicator,
 #reset-password-strength {
-  margin-bottom: 0.5rem;
+  /* place BELOW the input with a little top space */
+  margin-top: 0.5rem;
+  margin-bottom: 0;            /* was 0.5rem */
+  display: flex;
+  align-items: center;
+  gap: 10px;                   /* spacing between label and bar */
+  flex-wrap: wrap;             /* label wraps on small screens */
+  max-width: 220px;            /* reduced width for the indicator */
 }
 
-#password-strength-indicator .text-red-500,
-#reset-password-strength .text-red-500 { color: #ef4444; }
-#password-strength-indicator .text-orange-500,
-#reset-password-strength .text-orange-500 { color: #f97316; }
-#password-strength-indicator .text-yellow-500,
-#reset-password-strength .text-yellow-500 { color: #eab308; }
-#password-strength-indicator .text-green-600,
-#reset-password-strength .text-green-600 { color: #16a34a; }
-/* Password strength blocks */
-#password-strength-indicator {
-    display: flex;
-    gap: 6px;
-  }
-  #password-strength-indicator .bar {
-    flex: 1;
-    height: 8px;
-    border-radius: 4px;
-    background-color: #e5e7eb; /* gray-200 */
-    transition: background-color 0.3s ease;
-  }
-  
-  #passwordInfoTooltip {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    transform: translateY(5px);
-  }
-  .group:hover #passwordInfoTooltip {
-    transform: translateY(0);
-  }
+/* Label before the bar (no HTML change needed) */
+#password-strength-indicator::before,
+#reset-password-strength::before {
+  content: "Password Strength:";
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;              /* muted gray */
+}
+
+/* Bar container (5 small segments) */
+#password-strength-indicator .bar,
+#reset-password-strength .bar {
+  flex: 1 1 0;
+  min-width: 11px;             /* keeps segments visible on narrow screens */
+  height: 8px;
+  border-radius: 4px;
+  background-color: #e5e7eb;   /* gray when empty */
+  transition: background-color 0.2s ease;
+}
+
+/* Default: filled segments inherit color via level on the container */
+#password-strength-indicator .bar.filled,
+#reset-password-strength .bar.filled {
+  background-color: #e5e7eb;   /* will be overridden by the level rules below */
+}
+
+/* Color mapping by container level (use existing classes set by JS) */
+#password-strength-indicator.text-red-500 .bar.filled,
+#reset-password-strength.text-red-500 .bar.filled {
+  background-color: #ef4444;   /* weak - red */
+}
+#password-strength-indicator.text-orange-500 .bar.filled,
+#reset-password-strength.text-orange-500 .bar.filled {
+  background-color: #f59e0b;   /* medium - orange */
+}
+#password-strength-indicator.text-yellow-500 .bar.filled,
+#reset-password-strength.text-yellow-500 .bar.filled {
+  background-color: #a3e635;   /* good - yellow-green */
+}
+#password-strength-indicator.text-green-600 .bar.filled,
+#reset-password-strength.text-green-600 .bar.filled {
+  background-color: #16a34a;   /* strong - green */
+}
+
+/* (Optional) keep your tooltip transition as-is */
+#passwordInfoTooltip {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(5px);
+}
+.group:hover #passwordInfoTooltip {
+  transform: translateY(0);
+}
+
   

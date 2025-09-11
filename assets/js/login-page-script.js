@@ -164,14 +164,14 @@
 
     function gatherOtp() { return otpInputs.map(i => i.value).join(''); }
 
-    function calculatePasswordStrength(password) {
-      const checks = {
-          len: password.length >= 8,
-          hasLower: /[a-z]/.test(password),
-          hasUpper: /[A-Z]/.test(password),
-          hasDigit: /[0-9]/.test(password),
-          hasSpec: /[^A-Za-z0-9]/.test(password)
-      };
+    // function calculatePasswordStrength(password) {
+    //   const checks = {
+    //       len: password.length >= 8,
+    //       hasLower: /[a-z]/.test(password),
+    //       hasUpper: /[A-Z]/.test(password),
+    //       hasDigit: /[0-9]/.test(password),
+    //       hasSpec: /[^A-Za-z0-9]/.test(password)
+    //   };
       const score = Object.values(checks).filter(Boolean).length;
       let strengthText = 'Very Weak';
       let strengthClass = 'text-red-500';
