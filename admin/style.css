@@ -31,47 +31,43 @@ body {
   animation: fadeIn 0.3s ease-in-out;
 }
 
+.card {
+  border-radius: 10px;
+  border: none;
+}
+
+.card-header {
+  background: #0d6efd;
+  color: #fff;
+  font-weight: bold;
+}
+
 .stat-card {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 20px;
+  gap: 12px;
+  padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
+.stat-card i {
+  font-size: 32px;
+}
+
 .stat-card h6 {
   margin: 0;
   font-size: 14px;
   color: #6c757d;
 }
+
 .stat-card p {
   margin: 0;
-  font-size: 22px;
   font-weight: bold;
-}
-
-.card {
-  border: none;
-  border-radius: 10px;
-}
-
-.card-header {
-  background: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 @keyframes fadeIn {
-  from {opacity: 0; transform: translateY(10px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-
-/* Mobile tweaks */
-@media (max-width: 768px) {
-  .content {
-    padding: 1rem;
-  }
-  .stat-card {
-    padding: 15px;
-  }
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
