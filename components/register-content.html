@@ -1,4 +1,15 @@
 <!-- Register Breadcrumb Component -->
+
+<style>
+  #verifyOtpBtn {
+    background-color: #c9ef8a;
+    transition: background-color 0.3s;
+  }
+
+  #verifyOtpBtn:hover {
+    background-color: #c2e092; /* choose your hover color */
+  }
+</style>
 <div class="breadcrumb-block style-shared">
   <div class="breadcrumb-main bg-linear overflow-hidden">
     <div class="container lg:pt-[134px] pt-24 pb-10 relative">
@@ -38,6 +49,7 @@
               id="name"
               type="text"
               placeholder="Full Name *"
+              value="Mohamed Saadh"
               required
             />
             <div
@@ -54,6 +66,7 @@
               type="tel"
               placeholder="Phone Number (10 digits) *"
               maxlength="10"
+              value="9499025015"
               required
             />
             <div
@@ -69,6 +82,7 @@
               id="email"
               type="email"
               placeholder="Email Address *"
+              value="developer.saadh@gmail.com"
               required
             />
             <div
@@ -81,12 +95,14 @@
             <div class="flex items-center justify-between mb-2">
               <label for="password" class="form-label mb-0">Password *</label>
             </div>
-            <div class="password-strength-wrapper mb-2 flex items-center gap-2 relative">
+            <div
+              class="password-strength-wrapper mb-2 flex items-center gap-2 relative"
+            >
               <!-- <span class="text-sm font-medium">Password strength</span> -->
-            
+
               <div class="relative group">
                 <!-- <i class="ph ph-info text-gray-500 cursor-pointer"></i> -->
-            
+
                 <!-- Tooltip -->
                 <!-- <div
                   id="passwordInfoTooltip"
@@ -113,16 +129,16 @@
                 </div> -->
               </div>
             </div>
-            
-            
+
             <div id="password-strength-indicator" class="flex gap-1 mb-3"></div>
-           
+
             <div class="relative">
               <input
                 class="border-line px-4 pt-3 pb-3 w-full rounded-lg pr-12"
                 id="password"
                 type="password"
                 placeholder="Password *"
+                value="Saadh@123"
                 required
               />
               <button
@@ -151,6 +167,7 @@
                 id="confirmPassword"
                 type="password"
                 placeholder="Confirm Password *"
+                value="Saadh@123"
                 required
               />
               <button
@@ -172,7 +189,13 @@
 
           <div class="flex items-center mb-5">
             <div class="block-input">
-              <input type="checkbox" name="remember" id="remember" required />
+              <input
+                type="checkbox"
+                name="remember"
+                id="remember"
+                checked
+                required
+              />
               <i class="ph-fill ph-check-square icon-checkbox text-2xl"></i>
             </div>
             <label for="remember" class="pl-2 cursor-pointer text-secondary2">
@@ -278,7 +301,7 @@
             <div class="block-button">
               <button
                 type="submit"
-                class="button-main w-full"
+                class="button-main w-full text-black"
                 id="verifyOtpBtn"
               >
                 <span class="btn-text">Verify &amp; Complete Registration</span>
@@ -299,108 +322,6 @@
               </button>
             </div>
           </form>
-          <script>
-            // OTP input color feedback logic
-            document.addEventListener("DOMContentLoaded", function () {
-              const otpForm = document.getElementById("otpForm");
-              const otpInputs = otpForm.querySelectorAll(".otp-digit");
-              const verifyBtn = document.getElementById("verifyOtpBtn");
-              const otpErrorMsg = document.getElementById("otpErrorMsg");
-
-              // Remove color classes from all inputs
-              function resetOtpInputColors() {
-                otpInputs.forEach((input) => {
-                  input.classList.remove(
-                    "bg-green-100",
-                    "bg-red-100",
-                    "border-green-500",
-                    "border-red-500"
-                  );
-                });
-              }
-
-              // Set all inputs to green
-              function setOtpInputsGreen() {
-                otpInputs.forEach((input) => {
-                  input.classList.remove("bg-red-100", "border-red-500");
-                  input.classList.add("bg-green-100", "border-green-500");
-                });
-              }
-
-              // Set all inputs to red
-              function setOtpInputsRed() {
-                otpInputs.forEach((input) => {
-                  input.classList.remove("bg-green-100", "border-green-500");
-                  input.classList.add("bg-red-100", "border-red-500");
-                });
-              }
-
-              // On submit, handle OTP verification and color feedback
-              otpForm.addEventListener("submit", function (e) {
-                e.preventDefault();
-                resetOtpInputColors();
-                otpErrorMsg.classList.add("hidden");
-                otpErrorMsg.textContent = "";
-
-                // Collect OTP value
-                let otp = "";
-                otpInputs.forEach((input) => {
-                  otp += input.value.trim();
-                });
-
-                // Show loading state
-                verifyBtn.disabled = true;
-                verifyBtn.querySelector(".btn-text").classList.add("hidden");
-                verifyBtn
-                  .querySelector(".btn-loading")
-                  .classList.remove("hidden");
-
-                // Simulate AJAX request to verify OTP (replace with your actual AJAX)
-                // Example: POST to /api/verify-otp with {otp: otp, ...}
-                fetch("/api/verify-registration-otp", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ otp: otp }),
-                })
-                  .then((res) => res.json())
-                  .then((data) => {
-                    if (data.status === "success") {
-                      setOtpInputsGreen();
-                      // Optionally, proceed to next step after a short delay
-                      setTimeout(() => {
-                        // You may want to trigger the registration success UI here
-                        document.getElementById(
-                          "otpVerification"
-                        ).style.display = "none";
-                        document.getElementById(
-                          "successMessage"
-                        ).style.display = "";
-                      }, 500);
-                    } else {
-                      setOtpInputsRed();
-                      otpErrorMsg.textContent =
-                        data.message || "Invalid OTP. Please try again.";
-                      otpErrorMsg.classList.remove("hidden");
-                    }
-                  })
-                  .catch(() => {
-                    setOtpInputsRed();
-                    otpErrorMsg.textContent =
-                      "An error occurred. Please try again.";
-                    otpErrorMsg.classList.remove("hidden");
-                  })
-                  .finally(() => {
-                    verifyBtn.disabled = false;
-                    verifyBtn
-                      .querySelector(".btn-text")
-                      .classList.remove("hidden");
-                    verifyBtn
-                      .querySelector(".btn-loading")
-                      .classList.add("hidden");
-                  });
-              });
-            });
-          </script>
         </div>
 
         <!-- Step 3: Success -->
@@ -418,114 +339,6 @@
           </div>
           <a href="login.html" class="button-main">Login Now</a>
         </div>
-
-        <script>
-          // OTP input color feedback logic
-          document.addEventListener("DOMContentLoaded", function () {
-            const otpForm = document.getElementById("otpForm");
-            const otpInputs = otpForm.querySelectorAll(".otp-digit");
-            const verifyBtn = document.getElementById("verifyOtpBtn");
-            const otpErrorMsg = document.getElementById("otpErrorMsg");
-
-            // Remove color classes from all inputs
-            function resetOtpInputColors() {
-              otpInputs.forEach((input) => {
-                input.classList.remove(
-                  "bg-green-100",
-                  "bg-red-100",
-                  "border-green-500",
-                  "border-red-500"
-                );
-              });
-            }
-
-            // Set all inputs to green
-            function setOtpInputsGreen() {
-              otpInputs.forEach((input) => {
-                input.classList.remove("bg-red-100", "border-red-500");
-                input.classList.add("bg-green-100", "border-green-500");
-              });
-            }
-
-            // Set all inputs to red
-            function setOtpInputsRed() {
-              otpInputs.forEach((input) => {
-                input.classList.remove("bg-green-100", "border-green-500");
-                input.classList.add("bg-red-100", "border-red-500");
-              });
-            }
-
-            // On submit, handle OTP verification and color feedback
-            otpForm.addEventListener("submit", function (e) {
-              e.preventDefault();
-              resetOtpInputColors();
-              otpErrorMsg.classList.add("hidden");
-              otpErrorMsg.textContent = "";
-
-              // Collect OTP value
-              let otp = "";
-              otpInputs.forEach((input) => {
-                otp += input.value.trim();
-              });
-
-              // Show loading state
-              verifyBtn.disabled = true;
-              verifyBtn.querySelector(".btn-text").classList.add("hidden");
-              verifyBtn
-                .querySelector(".btn-loading")
-                .classList.remove("hidden");
-
-              // Simulate AJAX call to verify OTP (replace with real AJAX in production)
-              fetch("/api/verify-registration-otp", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ otp: otp }),
-              })
-                .then((res) => res.json())
-                .then((data) => {
-                  if (data.status === "success") {
-                    setOtpInputsGreen();
-                    // Optionally, proceed to success message after a short delay
-                    setTimeout(() => {
-                      document.getElementById("otpVerification").style.display =
-                        "none";
-                      document.getElementById("successMessage").style.display =
-                        "";
-                    }, 800);
-                  } else {
-                    setOtpInputsRed();
-                    otpErrorMsg.textContent =
-                      data.message || "Invalid OTP. Please try again.";
-                    otpErrorMsg.classList.remove("hidden");
-                  }
-                })
-                .catch(() => {
-                  setOtpInputsRed();
-                  otpErrorMsg.textContent =
-                    "An error occurred. Please try again.";
-                  otpErrorMsg.classList.remove("hidden");
-                })
-                .finally(() => {
-                  verifyBtn.disabled = false;
-                  verifyBtn
-                    .querySelector(".btn-text")
-                    .classList.remove("hidden");
-                  verifyBtn
-                    .querySelector(".btn-loading")
-                    .classList.add("hidden");
-                });
-            });
-
-            // Remove error/success color when user starts editing
-            otpInputs.forEach((input) => {
-              input.addEventListener("input", function () {
-                resetOtpInputColors();
-                otpErrorMsg.classList.add("hidden");
-                otpErrorMsg.textContent = "";
-              });
-            });
-          });
-        </script>
       </div>
 
       <div

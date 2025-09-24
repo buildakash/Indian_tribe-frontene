@@ -8,7 +8,7 @@
 // Registration Form Class
 class RegistrationForm {
   constructor() {
-    this.apiBaseUrl = "http://localhost/Indian%20Tribe/backend_php/routes/auth";
+    this.apiBaseUrl = "http://localhost:8080/routes/auth";
     this.currentStep = 1;
     this.formData = {}; // This will hold all user data across steps
     this.otpExpiryTime = null;
@@ -312,14 +312,17 @@ class RegistrationForm {
       .join("");
     if (otp.length !== 6) {
       window.toast.error("Please enter the complete 6-digit OTP.");
+      this.otpInputs.forEach((i) =>
+        i.classList.add("border-red-500", "bg-red-100")
+      );
       return;
     }
+
     this.setLoading(this.verifyOtpBtn, true);
+
     try {
       const fd = new FormData();
-      for (const key in this.formData) {
-        fd.append(key, this.formData[key]);
-      }
+      for (const key in this.formData) fd.append(key, this.formData[key]);
       fd.append("otp", otp);
 
       const response = await fetch(`${this.apiBaseUrl}/verify_otp.php`, {
@@ -329,14 +332,23 @@ class RegistrationForm {
       const result = await response.json();
 
       if (result.status === "success") {
-        this.showStep(3);
+        this.otpInputs.forEach((i) =>
+          i.classList.add("border-green-500", "bg-green-100")
+        );
+        this.showStep(3); // show success only if backend confirms
         this.stopOtpTimer();
       } else {
+        this.otpInputs.forEach((i) =>
+          i.classList.add("border-red-500", "bg-red-100")
+        );
         window.toast.error(result.message || "Invalid OTP");
       }
     } catch (err) {
       console.error("OTP Verification Error:", err);
       window.toast.error("A network error occurred. Please try again.");
+      this.otpInputs.forEach((i) =>
+        i.classList.add("border-red-500", "bg-red-100")
+      );
     } finally {
       this.setLoading(this.verifyOtpBtn, false);
     }
@@ -498,10 +510,13 @@ class RegistrationForm {
     const btnLoading = button.querySelector(".btn-loading");
     if (loading) {
       button.disabled = true;
+      // Add a .loading class so CSS targeting #registerBtn.loading will apply
+      button.classList.add("loading");
       if (btnText) btnText.classList.add("hidden");
       if (btnLoading) btnLoading.classList.remove("hidden");
     } else {
       button.disabled = false;
+      button.classList.remove("loading");
       if (btnText) btnText.classList.remove("hidden");
       if (btnLoading) btnLoading.classList.add("hidden");
     }

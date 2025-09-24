@@ -809,6 +809,28 @@ input[type=file]::-webkit-file-upload-button {
   opacity: 1;
   visibility: visible;
 }
+/* Make the modal use most of the viewport height when opened */
+.modal-newsletter .modal-newsletter-main .main-content {
+  max-height: calc(100vh - 80px) !important;
+  height: auto;
+  display: flex;
+}
+
+.modal-newsletter .modal-newsletter-main .right {
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+}
+
+@media (max-width: 767.98px) {
+  .modal-newsletter .modal-newsletter-main .main-content {
+    max-height: calc(100vh - 56px) !important;
+    flex-direction: column;
+  }
+
+  .modal-newsletter .modal-newsletter-main .right {
+    max-height: calc(100vh - 120px);
+  }
+}
 .modal-newsletter .modal-quickview-main,
 .modal-newsletter .modal-cart-main,
 .modal-newsletter .modal-wishlist-main,

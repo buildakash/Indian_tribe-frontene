@@ -144,8 +144,19 @@
       }
       setTimeout(() => this.showModal(), window.AppConfig?.modalDelayMs || 2000);
     }
-    showModal() { document.querySelector('.modal-newsletter')?.style && (document.querySelector('.modal-newsletter').style.display = 'flex'); }
-    hideModal() { const m = document.querySelector('.modal-newsletter'); if (m) m.style.display = 'none'; }
+    showModal() {
+      const modal = document.querySelector('.modal-newsletter');
+      const modalMain = document.querySelector('.modal-newsletter-main');
+      if (modal && modal.style) modal.style.display = 'flex';
+      if (modalMain) modalMain.classList.add('open');
+    }
+
+    hideModal() {
+      const m = document.querySelector('.modal-newsletter');
+      const modalMain = document.querySelector('.modal-newsletter-main');
+      if (m) m.style.display = 'none';
+      if (modalMain) modalMain.classList.remove('open');
+    }
 
     // Bind UI events (idempotent)
     bindEvents() {

@@ -1,521 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API Integration Test - Indian Tribe</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .test-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-        .test-section h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        button:disabled {
-            background-color: #6c757d;
-            cursor: not-allowed;
-        }
-        .response {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            white-space: pre-wrap;
-            font-family: monospace;
-            font-size: 12px;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .otp-inputs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .otp-input {
-            width: 50px !important;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .test-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      .test-section h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+      }
+      .response {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .otp-inputs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      .otp-input {
+        width: 50px !important;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>Indian Tribe Authentication API Test</h1>
-        <p>This page tests the integration between the frontend and backend authentication APIs.</p>
-        
-        <div class="test-section">
-            <h3>Step 1: Send Forgot Password OTP</h3>
-            <form id="forgot-password-form">
-                <div class="form-group">
-                    <label for="forgot-email">Email Address:</label>
-                    <input type="email" id="forgot-email" placeholder="Enter email address" required>
-                </div>
-                <button type="submit" id="send-otp-btn">Send Reset Code</button>
-            </form>
-            <div id="forgot-response" class="response"></div>
-        </div>
+      <h1>Indian Tribe Authentication API Test</h1>
+      <p>
+        This page tests the integration between the frontend and backend
+        authentication APIs.
+      </p>
 
-        <div class="test-section">
-            <h3>Step 2: Verify OTP</h3>
-            <form id="verify-otp-form">
-                <div class="form-group">
-                    <label for="verify-email">Email Address:</label>
-                    <input type="email" id="verify-email" placeholder="Enter email address" required>
-                </div>
-                <div class="form-group">
-                    <label for="otp">4-Digit OTP:</label>
-                    <div class="otp-inputs">
-                        <input type="text" class="otp-input" id="otp-1" maxlength="1" placeholder="0">
-                        <input type="text" class="otp-input" id="otp-2" maxlength="1" placeholder="0">
-                        <input type="text" class="otp-input" id="otp-3" maxlength="1" placeholder="0">
-                        <input type="text" class="otp-input" id="otp-4" maxlength="1" placeholder="0">
-                    </div>
-                </div>
-                <button type="submit" id="verify-otp-btn">Verify OTP</button>
-            </form>
-            <div id="verify-response" class="response"></div>
-        </div>
+      <div class="test-section">
+        <h3>Step 1: Send Forgot Password OTP</h3>
+        <form id="forgot-password-form">
+          <div class="form-group">
+            <label for="forgot-email">Email Address:</label>
+            <input
+              type="email"
+              id="forgot-email"
+              placeholder="Enter email address"
+              required
+            />
+          </div>
+          <button type="submit" id="send-otp-btn">Send Reset Code</button>
+        </form>
+        <div id="forgot-response" class="response"></div>
+      </div>
 
-        <div class="test-section">
-            <h3>Step 3: Reset Password</h3>
-            <form id="reset-password-form">
-                <div class="form-group">
-                    <label for="reset-email">Email Address:</label>
-                    <input type="email" id="reset-email" placeholder="Enter email address" required>
-                </div>
-                <div class="form-group">
-                    <label for="new-password">New Password:</label>
-                    <input type="password" id="new-password" placeholder="Enter new password" required>
-                </div>
-                <div class="form-group">
-                    <label for="confirm-password">Confirm Password:</label>
-                    <input type="password" id="confirm-password" placeholder="Confirm new password" required>
-                </div>
-                <button type="submit" id="reset-password-btn">Reset Password</button>
-            </form>
-            <div id="reset-response" class="response"></div>
-        </div>
+      <div class="test-section">
+        <h3>Step 2: Verify OTP</h3>
+        <form id="verify-otp-form">
+          <div class="form-group">
+            <label for="verify-email">Email Address:</label>
+            <input
+              type="email"
+              id="verify-email"
+              placeholder="Enter email address"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="otp">4-Digit OTP:</label>
+            <div class="otp-inputs">
+              <input
+                type="text"
+                class="otp-input"
+                id="otp-1"
+                maxlength="1"
+                placeholder="0"
+              />
+              <input
+                type="text"
+                class="otp-input"
+                id="otp-2"
+                maxlength="1"
+                placeholder="0"
+              />
+              <input
+                type="text"
+                class="otp-input"
+                id="otp-3"
+                maxlength="1"
+                placeholder="0"
+              />
+              <input
+                type="text"
+                class="otp-input"
+                id="otp-4"
+                maxlength="1"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <button type="submit" id="verify-otp-btn">Verify OTP</button>
+        </form>
+        <div id="verify-response" class="response"></div>
+      </div>
 
-        <div class="test-section">
-            <h3>Step 4: Test Login</h3>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email Address:</label>
-                    <input type="email" id="login-email" placeholder="Enter email address" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password:</label>
-                    <input type="password" id="login-password" placeholder="Enter password" required>
-                </div>
-                <button type="submit" id="login-btn">Login</button>
-            </form>
-            <div id="login-response" class="response"></div>
-        </div>
+      <div class="test-section">
+        <h3>Step 3: Reset Password</h3>
+        <form id="reset-password-form">
+          <div class="form-group">
+            <label for="reset-email">Email Address:</label>
+            <input
+              type="email"
+              id="reset-email"
+              placeholder="Enter email address"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="new-password">New Password:</label>
+            <input
+              type="password"
+              id="new-password"
+              placeholder="Enter new password"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="confirm-password">Confirm Password:</label>
+            <input
+              type="password"
+              id="confirm-password"
+              placeholder="Confirm new password"
+              required
+            />
+          </div>
+          <button type="submit" id="reset-password-btn">Reset Password</button>
+        </form>
+        <div id="reset-response" class="response"></div>
+      </div>
+
+      <div class="test-section">
+        <h3>Step 4: Test Login</h3>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">Email Address:</label>
+            <input
+              type="email"
+              id="login-email"
+              placeholder="Enter email address"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password:</label>
+            <input
+              type="password"
+              id="login-password"
+              placeholder="Enter password"
+              required
+            />
+          </div>
+          <button type="submit" id="login-btn">Login</button>
+        </form>
+        <div id="login-response" class="response"></div>
+      </div>
     </div>
 
     <script src="./assets/js/toast.js"></script>
     <script>
-        // Configuration for API base URL
-        const API_BASE_URL = 'http://localhost:8000/routes/auth';
-        
-        // Forgot password page functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailForm = document.getElementById('forgot-password-form');
-            const otpForm = document.getElementById('verify-otp-form');
-            const newPasswordForm = document.getElementById('reset-password-form');
-            
-            const backToEmailBtn = document.getElementById('forgot-password-form').querySelector('button[type="submit"]');
-            const backToOtpBtn = document.getElementById('verify-otp-form').querySelector('button[type="submit"]');
-            
-            let currentEmail = '';
-            let currentOtp = '';
+      // Configuration for API base URL
+      const API_BASE_URL = "http://localhost:8080/routes/auth";
 
-            // Show/Hide forms
-            function showForm(formId) {
-                [emailForm, otpForm, newPasswordForm].forEach(form => {
-                    form.style.display = 'none';
-                });
-                document.getElementById(formId).style.display = 'block';
+      // Forgot password page functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const emailForm = document.getElementById("forgot-password-form");
+        const otpForm = document.getElementById("verify-otp-form");
+        const newPasswordForm = document.getElementById("reset-password-form");
+
+        const backToEmailBtn = document
+          .getElementById("forgot-password-form")
+          .querySelector('button[type="submit"]');
+        const backToOtpBtn = document
+          .getElementById("verify-otp-form")
+          .querySelector('button[type="submit"]');
+
+        let currentEmail = "";
+        let currentOtp = "";
+
+        // Show/Hide forms
+        function showForm(formId) {
+          [emailForm, otpForm, newPasswordForm].forEach((form) => {
+            form.style.display = "none";
+          });
+          document.getElementById(formId).style.display = "block";
+        }
+
+        // Clear error messages
+        function clearErrors() {
+          document.querySelectorAll(".error-message").forEach((error) => {
+            error.style.display = "none";
+            error.textContent = "";
+          });
+        }
+
+        // Show error message
+        function showError(fieldId, message) {
+          const errorElement = document.getElementById(fieldId);
+          if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = "block";
+          }
+        }
+
+        // Handle API errors
+        function handleAPIError(error, defaultMessage = "An error occurred") {
+          console.error("API Error:", error);
+
+          if (error.name === "TypeError" && error.message.includes("fetch")) {
+            // Network error
+            window.toast.error(
+              "Network error: Please check your internet connection",
+              "Connection Error"
+            );
+          } else if (error.status === "error") {
+            // Backend API error
+            window.toast.error(error.message || defaultMessage, "API Error");
+          } else if (error.message) {
+            // Generic error with message
+            window.toast.error(error.message, "Error");
+          } else {
+            // Fallback error
+            window.toast.error(defaultMessage, "Error");
+          }
+        }
+
+        // Handle API success
+        function handleAPISuccess(message, title = "Success") {
+          window.toast.success(message, title);
+        }
+
+        // Handle email form submission
+        emailForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          clearErrors();
+
+          const email = document.getElementById("forgot-email").value.trim();
+          const sendOtpBtn = document.getElementById("send-otp-btn");
+
+          // Frontend validation
+          if (!email) {
+            showError("forgot-email", "Email is required");
+            window.toast.error(
+              "Please enter your email address",
+              "Validation Error"
+            );
+            return;
+          }
+
+          if (!email.includes("@") || !email.includes(".")) {
+            showError("forgot-email", "Please enter a valid email address");
+            window.toast.error(
+              "Please enter a valid email address",
+              "Validation Error"
+            );
+            return;
+          }
+
+          currentEmail = email;
+          sendOtpBtn.disabled = true;
+          sendOtpBtn.textContent = "Sending...";
+
+          try {
+            const formData = new FormData();
+            formData.append("email", email);
+
+            const response = await fetch(
+              `${API_BASE_URL}/forgot_password.php`,
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(
+                `HTTP ${response.status}: ${response.statusText}`
+              );
             }
 
-            // Clear error messages
-            function clearErrors() {
-                document.querySelectorAll('.error-message').forEach(error => {
-                    error.style.display = 'none';
-                    error.textContent = '';
-                });
+            const result = await response.json();
+
+            if (result.status === "success") {
+              handleAPISuccess("Reset code sent to your email!", "OTP Sent");
+              showForm("verify-otp-form");
+            } else {
+              // Backend validation error
+              if (result.message) {
+                showError("forgot-email", result.message);
+                window.toast.error(result.message, "Failed to Send OTP");
+              } else {
+                showError("forgot-email", "Failed to send reset code");
+                window.toast.error("Failed to send reset code", "Error");
+              }
             }
-
-            // Show error message
-            function showError(fieldId, message) {
-                const errorElement = document.getElementById(fieldId);
-                if (errorElement) {
-                    errorElement.textContent = message;
-                    errorElement.style.display = 'block';
-                }
-            }
-
-            // Handle API errors
-            function handleAPIError(error, defaultMessage = 'An error occurred') {
-                console.error('API Error:', error);
-                
-                if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    // Network error
-                    window.toast.error('Network error: Please check your internet connection', 'Connection Error');
-                } else if (error.status === 'error') {
-                    // Backend API error
-                    window.toast.error(error.message || defaultMessage, 'API Error');
-                } else if (error.message) {
-                    // Generic error with message
-                    window.toast.error(error.message, 'Error');
-                } else {
-                    // Fallback error
-                    window.toast.error(defaultMessage, 'Error');
-                }
-            }
-
-            // Handle API success
-            function handleAPISuccess(message, title = 'Success') {
-                window.toast.success(message, title);
-            }
-
-            // Handle email form submission
-            emailForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                clearErrors();
-                
-                const email = document.getElementById('forgot-email').value.trim();
-                const sendOtpBtn = document.getElementById('send-otp-btn');
-                
-                // Frontend validation
-                if (!email) {
-                    showError('forgot-email', 'Email is required');
-                    window.toast.error('Please enter your email address', 'Validation Error');
-                    return;
-                }
-                
-                if (!email.includes('@') || !email.includes('.')) {
-                    showError('forgot-email', 'Please enter a valid email address');
-                    window.toast.error('Please enter a valid email address', 'Validation Error');
-                    return;
-                }
-                
-                currentEmail = email;
-                sendOtpBtn.disabled = true;
-                sendOtpBtn.textContent = 'Sending...';
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('email', email);
-                    
-                    const response = await fetch(`${API_BASE_URL}/forgot_password.php`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        handleAPISuccess('Reset code sent to your email!', 'OTP Sent');
-                        showForm('verify-otp-form');
-                    } else {
-                        // Backend validation error
-                        if (result.message) {
-                            showError('forgot-email', result.message);
-                            window.toast.error(result.message, 'Failed to Send OTP');
-                        } else {
-                            showError('forgot-email', 'Failed to send reset code');
-                            window.toast.error('Failed to send reset code', 'Error');
-                        }
-                    }
-                } catch (error) {
-                    handleAPIError(error, 'Failed to send reset code. Please try again.');
-                } finally {
-                    sendOtpBtn.disabled = false;
-                    sendOtpBtn.textContent = 'Send Reset Code';
-                }
-            });
-
-            // Handle OTP input
-            const otpInputs = document.querySelectorAll('.otp-input');
-            otpInputs.forEach((input, index) => {
-                input.addEventListener('input', function(e) {
-                    const value = e.target.value;
-                    if (value.length === 1 && index < otpInputs.length - 1) {
-                        otpInputs[index + 1].focus();
-                    }
-                });
-                
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                        otpInputs[index - 1].focus();
-                    }
-                });
-            });
-
-            // Handle OTP form submission
-            otpForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                clearErrors();
-                
-                const otp = Array.from(otpInputs).map(input => input.value).join('');
-                const verifyOtpBtn = document.getElementById('verify-otp-btn');
-                
-                // Frontend validation
-                if (otp.length !== 4) {
-                    window.toast.error('Please enter the 4-digit code', 'Validation Error');
-                    return;
-                }
-                
-                if (!/^\d{4}$/.test(otp)) {
-                    window.toast.error('OTP must contain only numbers', 'Validation Error');
-                    return;
-                }
-                
-                currentOtp = otp;
-                verifyOtpBtn.disabled = true;
-                verifyOtpBtn.textContent = 'Verifying...';
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('email', currentEmail);
-                    formData.append('otp', otp);
-                    
-                    const response = await fetch(`${API_BASE_URL}/verify_forgot_password_otp.php`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        handleAPISuccess('Code verified successfully! Please set your new password.', 'OTP Verified');
-                        showForm('reset-password-form');
-                    } else {
-                        // Backend validation error
-                        if (result.message) {
-                            if (result.message.includes('expired')) {
-                                window.toast.error(result.message, 'OTP Expired');
-                            } else if (result.message.includes('Invalid')) {
-                                window.toast.error(result.message, 'Invalid OTP');
-                            } else {
-                                window.toast.error(result.message, 'Verification Failed');
-                            }
-                        } else {
-                            window.toast.error('Invalid OTP. Please try again.', 'Verification Failed');
-                        }
-                    }
-                } catch (error) {
-                    handleAPIError(error, 'Failed to verify OTP. Please try again.');
-                } finally {
-                    verifyOtpBtn.disabled = false;
-                    verifyOtpBtn.textContent = 'Verify Code';
-                }
-            });
-
-            // Handle resend OTP
-            document.getElementById('resend-otp-btn').addEventListener('click', async function() {
-                clearErrors();
-                
-                if (!currentEmail) {
-                    window.toast.error('No email address found. Please go back and enter your email.', 'Error');
-                    return;
-                }
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('email', currentEmail);
-                    formData.append('purpose', 'forgot');
-                    
-                    const response = await fetch(`${API_BASE_URL}/resend_otp.php`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        handleAPISuccess('New code sent to your email!', 'OTP Resent');
-                        // Clear OTP inputs
-                        otpInputs.forEach(input => input.value = '');
-                        otpInputs[0].focus();
-                    } else {
-                        // Backend validation error
-                        if (result.message) {
-                            window.toast.error(result.message, 'Failed to Resend OTP');
-                        } else {
-                            window.toast.error('Failed to resend code', 'Error');
-                        }
-                    }
-                } catch (error) {
-                    handleAPIError(error, 'Failed to resend OTP. Please try again.');
-                }
-            });
-
-            // Handle new password form submission
-            newPasswordForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                clearErrors();
-                
-                const newPassword = document.getElementById('new-password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-                const resetPasswordBtn = document.getElementById('reset-password-btn');
-                
-                // Frontend validation
-                let hasErrors = false;
-                
-                if (!newPassword) {
-                    showError('new-password', 'New password is required');
-                    hasErrors = true;
-                } else if (newPassword.length < 8) {
-                    showError('new-password', 'Password must be at least 8 characters long');
-                    hasErrors = true;
-                } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(newPassword)) {
-                    showError('new-password', 'Password must contain uppercase, lowercase, number, and special character');
-                    hasErrors = true;
-                }
-                
-                if (!confirmPassword) {
-                    showError('confirm-password', 'Please confirm your password');
-                    hasErrors = true;
-                } else if (newPassword !== confirmPassword) {
-                    showError('confirm-password', 'Passwords do not match');
-                    hasErrors = true;
-                }
-                
-                if (hasErrors) {
-                    window.toast.error('Please fix the errors above', 'Validation Error');
-                    return;
-                }
-                
-                resetPasswordBtn.disabled = true;
-                resetPasswordBtn.textContent = 'Resetting...';
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('email', currentEmail);
-                    formData.append('new_password', newPassword);
-                    formData.append('confirm_password', confirmPassword);
-                    
-                    const response = await fetch(`${API_BASE_URL}/reset_password.php`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        handleAPISuccess('Password reset successful! You can now login with your new password.', 'Password Reset');
-                        
-                        // Clear forms and show email form
-                        setTimeout(() => {
-                            showForm('forgot-password-form');
-                            emailForm.reset();
-                            otpForm.reset();
-                            newPasswordForm.reset();
-                            otpInputs.forEach(input => input.value = '');
-                            currentEmail = '';
-                            currentOtp = '';
-                        }, 2000);
-                    } else {
-                        // Backend validation error
-                        if (result.message) {
-                            if (result.message.includes('password') || result.message.includes('Password')) {
-                                showError('new-password', result.message);
-                            } else {
-                                window.toast.error(result.message, 'Password Reset Failed');
-                            }
-                        } else {
-                            window.toast.error('Failed to reset password', 'Error');
-                        }
-                    }
-                } catch (error) {
-                    handleAPIError(error, 'Failed to reset password. Please try again.');
-                } finally {
-                    resetPasswordBtn.disabled = false;
-                    resetPasswordBtn.textContent = 'Reset Password';
-                }
-            });
-
-            // Handle back buttons
-            backToEmailBtn.addEventListener('click', function() {
-                showForm('forgot-password-form');
-            });
-            
-            backToOtpBtn.addEventListener('click', function() {
-                showForm('verify-otp-form');
-            });
-
-            // Show welcome message
-            window.toast.info('Reset your password by following the steps below.', 'Password Reset');
+          } catch (error) {
+            handleAPIError(
+              error,
+              "Failed to send reset code. Please try again."
+            );
+          } finally {
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.textContent = "Send Reset Code";
+          }
         });
+
+        // Handle OTP input
+        const otpInputs = document.querySelectorAll(".otp-input");
+        otpInputs.forEach((input, index) => {
+          input.addEventListener("input", function (e) {
+            const value = e.target.value;
+            if (value.length === 1 && index < otpInputs.length - 1) {
+              otpInputs[index + 1].focus();
+            }
+          });
+
+          input.addEventListener("keydown", function (e) {
+            if (e.key === "Backspace" && !e.target.value && index > 0) {
+              otpInputs[index - 1].focus();
+            }
+          });
+        });
+
+        // Handle OTP form submission
+        otpForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          clearErrors();
+
+          const otp = Array.from(otpInputs)
+            .map((input) => input.value)
+            .join("");
+          const verifyOtpBtn = document.getElementById("verify-otp-btn");
+
+          // Frontend validation
+          if (otp.length !== 4) {
+            window.toast.error(
+              "Please enter the 4-digit code",
+              "Validation Error"
+            );
+            return;
+          }
+
+          if (!/^\d{4}$/.test(otp)) {
+            window.toast.error(
+              "OTP must contain only numbers",
+              "Validation Error"
+            );
+            return;
+          }
+
+          currentOtp = otp;
+          verifyOtpBtn.disabled = true;
+          verifyOtpBtn.textContent = "Verifying...";
+
+          try {
+            const formData = new FormData();
+            formData.append("email", currentEmail);
+            formData.append("otp", otp);
+
+            const response = await fetch(
+              `${API_BASE_URL}/verify_forgot_password_otp.php`,
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(
+                `HTTP ${response.status}: ${response.statusText}`
+              );
+            }
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+              handleAPISuccess(
+                "Code verified successfully! Please set your new password.",
+                "OTP Verified"
+              );
+              showForm("reset-password-form");
+            } else {
+              // Backend validation error
+              if (result.message) {
+                if (result.message.includes("expired")) {
+                  window.toast.error(result.message, "OTP Expired");
+                } else if (result.message.includes("Invalid")) {
+                  window.toast.error(result.message, "Invalid OTP");
+                } else {
+                  window.toast.error(result.message, "Verification Failed");
+                }
+              } else {
+                window.toast.error(
+                  "Invalid OTP. Please try again.",
+                  "Verification Failed"
+                );
+              }
+            }
+          } catch (error) {
+            handleAPIError(error, "Failed to verify OTP. Please try again.");
+          } finally {
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.textContent = "Verify Code";
+          }
+        });
+
+        // Handle resend OTP
+        document
+          .getElementById("resend-otp-btn")
+          .addEventListener("click", async function () {
+            clearErrors();
+
+            if (!currentEmail) {
+              window.toast.error(
+                "No email address found. Please go back and enter your email.",
+                "Error"
+              );
+              return;
+            }
+
+            try {
+              const formData = new FormData();
+              formData.append("email", currentEmail);
+              formData.append("purpose", "forgot");
+
+              const response = await fetch(`${API_BASE_URL}/resend_otp.php`, {
+                method: "POST",
+                body: formData,
+              });
+
+              if (!response.ok) {
+                throw new Error(
+                  `HTTP ${response.status}: ${response.statusText}`
+                );
+              }
+
+              const result = await response.json();
+
+              if (result.status === "success") {
+                handleAPISuccess("New code sent to your email!", "OTP Resent");
+                // Clear OTP inputs
+                otpInputs.forEach((input) => (input.value = ""));
+                otpInputs[0].focus();
+              } else {
+                // Backend validation error
+                if (result.message) {
+                  window.toast.error(result.message, "Failed to Resend OTP");
+                } else {
+                  window.toast.error("Failed to resend code", "Error");
+                }
+              }
+            } catch (error) {
+              handleAPIError(error, "Failed to resend OTP. Please try again.");
+            }
+          });
+
+        // Handle new password form submission
+        newPasswordForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          clearErrors();
+
+          const newPassword = document.getElementById("new-password").value;
+          const confirmPassword =
+            document.getElementById("confirm-password").value;
+          const resetPasswordBtn =
+            document.getElementById("reset-password-btn");
+
+          // Frontend validation
+          let hasErrors = false;
+
+          if (!newPassword) {
+            showError("new-password", "New password is required");
+            hasErrors = true;
+          } else if (newPassword.length < 8) {
+            showError(
+              "new-password",
+              "Password must be at least 8 characters long"
+            );
+            hasErrors = true;
+          } else if (
+            !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(newPassword)
+          ) {
+            showError(
+              "new-password",
+              "Password must contain uppercase, lowercase, number, and special character"
+            );
+            hasErrors = true;
+          }
+
+          if (!confirmPassword) {
+            showError("confirm-password", "Please confirm your password");
+            hasErrors = true;
+          } else if (newPassword !== confirmPassword) {
+            showError("confirm-password", "Passwords do not match");
+            hasErrors = true;
+          }
+
+          if (hasErrors) {
+            window.toast.error(
+              "Please fix the errors above",
+              "Validation Error"
+            );
+            return;
+          }
+
+          resetPasswordBtn.disabled = true;
+          resetPasswordBtn.textContent = "Resetting...";
+
+          try {
+            const formData = new FormData();
+            formData.append("email", currentEmail);
+            formData.append("new_password", newPassword);
+            formData.append("confirm_password", confirmPassword);
+
+            const response = await fetch(`${API_BASE_URL}/reset_password.php`, {
+              method: "POST",
+              body: formData,
+            });
+
+            if (!response.ok) {
+              throw new Error(
+                `HTTP ${response.status}: ${response.statusText}`
+              );
+            }
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+              handleAPISuccess(
+                "Password reset successful! You can now login with your new password.",
+                "Password Reset"
+              );
+
+              // Clear forms and show email form
+              setTimeout(() => {
+                showForm("forgot-password-form");
+                emailForm.reset();
+                otpForm.reset();
+                newPasswordForm.reset();
+                otpInputs.forEach((input) => (input.value = ""));
+                currentEmail = "";
+                currentOtp = "";
+              }, 2000);
+            } else {
+              // Backend validation error
+              if (result.message) {
+                if (
+                  result.message.includes("password") ||
+                  result.message.includes("Password")
+                ) {
+                  showError("new-password", result.message);
+                } else {
+                  window.toast.error(result.message, "Password Reset Failed");
+                }
+              } else {
+                window.toast.error("Failed to reset password", "Error");
+              }
+            }
+          } catch (error) {
+            handleAPIError(
+              error,
+              "Failed to reset password. Please try again."
+            );
+          } finally {
+            resetPasswordBtn.disabled = false;
+            resetPasswordBtn.textContent = "Reset Password";
+          }
+        });
+
+        // Handle back buttons
+        backToEmailBtn.addEventListener("click", function () {
+          showForm("forgot-password-form");
+        });
+
+        backToOtpBtn.addEventListener("click", function () {
+          showForm("verify-otp-form");
+        });
+
+        // Show welcome message
+        window.toast.info(
+          "Reset your password by following the steps below.",
+          "Password Reset"
+        );
+      });
     </script>
-</body>
-</html> 
+  </body>
+</html>
