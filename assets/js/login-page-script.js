@@ -267,8 +267,31 @@
       setButtonLoadingState(btnLoginSubmit, true);
       try {
         const resp = await apiFetch(ROUTES.login, { email, password: pass });
-        window.toast.success(resp.message || 'Logged in successfully! Redirecting...');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        
+        // Store user data and role in localStorage using session manager
+        if (resp.status === 'success') {
+          const userData = {
+            user_id: resp.user_id,
+            user_name: resp.user_name,
+            role: resp.role || 'user'
+          };
+          
+          // Use session manager to save session with 7-day expiry
+          if (window.userSessionManager && window.userSessionManager.saveSession(userData)) {
+            // Check if user is trying to access admin area
+            if (resp.role === 'admin') {
+              window.toast.warning('Admin detected! Redirecting to admin panel...');
+              setTimeout(() => { window.location.href = 'admin/index.html'; }, 1500);
+            } else {
+              window.toast.success(resp.message || 'Logged in successfully! Redirecting...');
+              setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            }
+          } else {
+            window.toast.error('❌ Failed to save session. Please try again.');
+          }
+        } else {
+          window.toast.error(resp.message || 'Login failed. Please check your credentials.');
+        }
       } catch (err) {
           window.toast.error(err.message || 'Login failed. Please check your credentials.');
       } finally {

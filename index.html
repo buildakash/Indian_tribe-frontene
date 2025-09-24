@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="./assets/css/style.css" />
     <link rel="stylesheet" href="./dist/output-scss.css" />
     <link rel="stylesheet" href="./dist/output-tailwind.css" />
+    <link rel="stylesheet" href="./assets/css/user-experience.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -44,9 +45,17 @@
       ><i class="ph-bold ph-caret-up"></i
     ></a>
 
+    <!-- User Session Management -->
+    <script src="./assets/js/user-session-manager.js"></script>
+    <script src="./assets/js/user-homepage-manager.js"></script>
+    
     <!-- SCRIPT TO LOAD COMPONENTS -->
    <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // Initialize user homepage manager
+    if (window.userHomepageManager) {
+      window.userHomepageManager.init();
+    }
     const loadComponent = (component) =>
       fetch(component).then((res) => res.ok ? res.text() : Promise.reject(component));
 
