@@ -503,6 +503,11 @@ async function loadBlogs() {
 
     if (data.success && data.blogs.length > 0) {
       blogs = data.blogs;
+      console.log("Blogs loaded:", blogs.length);
+      if (blogs.length > 0) {
+        console.log("Sample blog object:", blogs[0]);
+        console.log("Blog keys:", Object.keys(blogs[0]));
+      }
       data.blogs.forEach((blog) => {
         list.innerHTML += `
                     <div class="card mb-3">
@@ -520,14 +525,22 @@ async function loadBlogs() {
                                 </div>
                                 <div class="col-md-8">
                                     <h6 class="mb-1">${blog.title}</h6>
-                                    <p class="text-muted mb-1">${
-                                      blog.content
-                                        ? blog.content.substring(0, 100) + "..."
-                                        : "No content"
-                                    }</p>
-                                    <small class="text-muted">Slug: ${
-                                      blog.slug
-                                    }</small>
+                                    <div class="text-muted mb-1" style="max-height: 60px; overflow: hidden;">
+                                        ${
+                                          blog.content && blog.content.trim()
+                                            ? (() => {
+                                                // Strip HTML tags and get plain text
+                                                const plainText = blog.content.replace(/<[^>]*>/g, '');
+                                                const truncated = plainText.substring(0, 150);
+                                                return truncated + (plainText.length > 150 ? "..." : "");
+                                              })()
+                                            : "<em class='text-muted'>No content available</em>"
+                                        }
+                                    </div>
+                                    <small class="text-muted">
+                                        <strong>Slug:</strong> ${blog.slug} | 
+                                        <strong>Created:</strong> ${new Date(blog.created_at || blog.createdAt || Date.now()).toLocaleDateString()}
+                                    </small>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="btn-group-vertical w-100">
