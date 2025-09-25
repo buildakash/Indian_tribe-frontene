@@ -650,8 +650,6 @@ async function handleProductSubmit(e) {
   e.preventDefault();
   e.stopPropagation();
 
-  console.log("Product form submitted, preventing default behavior");
-
   const formData = new FormData(e.target);
   formData.append("shop_id", currentShop.id);
 
@@ -774,7 +772,40 @@ async function editProduct(productId) {
   document.getElementById("prodDesc").value = product.description || "";
   document.getElementById("prodPrice").value = product.price;
   document.getElementById("prodStock").value = product.stock;
-  document.getElementById("prodCategory").value = product.category_id;
+
+  // Set category value - ensure it's set after dropdown is populated
+  const setCategoryValue = () => {
+    const categorySelect = document.getElementById("prodCategory");
+
+    // Try different possible field names for category ID
+    let categoryId =
+      product.category_id ||
+      product.categoryId ||
+      product.cat_id ||
+      product.catId;
+
+    // Check if category_id exists and is valid
+    if (!categoryId || categoryId === null || categoryId === undefined) {
+      return;
+    }
+
+    const targetValue = categoryId.toString();
+
+    // Check if the target category exists in the dropdown
+    const optionExists = Array.from(categorySelect.options).some(
+      (option) => option.value === targetValue
+    );
+
+    if (optionExists) {
+      categorySelect.value = targetValue;
+    } else {
+    }
+  };
+
+  // Try to set immediately, then with a small delay as fallback
+  setCategoryValue();
+  setTimeout(setCategoryValue, 50);
+
   document.getElementById("prodStatus").value = product.status || "active";
   document.getElementById("prodNew").checked = product.is_new_arrival == 1;
 
@@ -983,12 +1014,8 @@ async function saveEdit(type) {
       body: formData,
     });
 
-    console.log("Response status:", response.status);
-    console.log("Response headers:", Object.fromEntries(response.headers.entries()));
-    
     const responseText = await response.text();
-    console.log("Raw response text:", responseText);
-    
+
     let data;
     try {
       data = JSON.parse(responseText);
