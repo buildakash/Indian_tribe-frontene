@@ -874,7 +874,24 @@ function switchToAddMode(type) {
 
   // Reset form
   form.reset();
-  document.getElementById(`${type}Id`).value = "";
+
+  // Get the correct ID field name based on type
+  let idFieldName;
+  switch (type) {
+    case "product":
+      idFieldName = "prodId";
+      break;
+    case "category":
+      idFieldName = "catId";
+      break;
+    case "blog":
+      idFieldName = "blogId";
+      break;
+    default:
+      idFieldName = `${type}Id`;
+  }
+
+  document.getElementById(idFieldName).value = "";
 }
 
 /**
@@ -900,7 +917,24 @@ function setupEditControls(type) {
 async function saveEdit(type) {
   const form = document.getElementById(`${type}Form`);
   const formData = new FormData(form);
-  const id = document.getElementById(`${type}Id`).value;
+
+  // Get the correct ID field name based on type
+  let idFieldName;
+  switch (type) {
+    case "product":
+      idFieldName = "prodId";
+      break;
+    case "category":
+      idFieldName = "catId";
+      break;
+    case "blog":
+      idFieldName = "blogId";
+      break;
+    default:
+      idFieldName = `${type}Id`;
+  }
+
+  const id = document.getElementById(idFieldName).value;
 
   console.log(`Saving edit for ${type}, ID: ${id}`);
 
