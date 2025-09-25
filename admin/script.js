@@ -1133,7 +1133,7 @@ function createProductGallery(images, productId) {
 
   // If only one image, show as normal single photo
   if (images.length === 1) {
-    const imageUrl = `http://localhost:2034/routes/uploads/products/${images[0]}`;
+    const imageUrl = `http://localhost:2034/api/v1/uploads/products/${images[0]}`;
     console.log("Single image URL:", imageUrl);
     return `<div class="single-image-container" onclick="openImageModal(${productId}, 0)">
                     <img src="${imageUrl}" 
