@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const res = await fetch(
-        "http://localhost:8080/routes/admin/login_admin.php",
+        "http://localhost:2034/routes/admin/login_admin.php",
         {
           method: "POST",
           body: formData,

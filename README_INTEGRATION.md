@@ -252,7 +252,7 @@ window.toast.success("Operation completed successfully!", "Success");
 
 ```javascript
 window.AppConfig = {
-  apiBaseUrl: "http://localhost:8080/routes/auth",
+  apiBaseUrl: "http://localhost:2034/api/v1/auth",
   debug: true, // Enable detailed error logging
 };
 ```

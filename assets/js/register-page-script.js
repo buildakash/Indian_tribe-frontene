@@ -8,7 +8,7 @@
 // Registration Form Class
 class RegistrationForm {
   constructor() {
-    this.apiBaseUrl = "http://localhost:8080/routes/auth";
+    this.apiBaseUrl = "http://localhost:2034/api/v1/auth";
     this.currentStep = 1;
     this.formData = {}; // This will hold all user data across steps
     this.otpExpiryTime = null;
@@ -284,7 +284,7 @@ class RegistrationForm {
         fd.append(key, this.formData[key]);
       }
 
-      const response = await fetch(`${this.apiBaseUrl}/register.php`, {
+      const response = await fetch(`${this.apiBaseUrl}/register`, {
         method: "POST",
         body: fd,
       });
@@ -325,7 +325,7 @@ class RegistrationForm {
       for (const key in this.formData) fd.append(key, this.formData[key]);
       fd.append("otp", otp);
 
-      const response = await fetch(`${this.apiBaseUrl}/verify_otp.php`, {
+      const response = await fetch(`${this.apiBaseUrl}/verify_otp`, {
         method: "POST",
         body: fd,
       });
@@ -362,7 +362,7 @@ class RegistrationForm {
         fd.append(key, this.formData[key]);
       }
 
-      const response = await fetch(`${this.apiBaseUrl}/resend_otp.php`, {
+      const response = await fetch(`${this.apiBaseUrl}/resend_otp`, {
         method: "POST",
         body: fd,
       });

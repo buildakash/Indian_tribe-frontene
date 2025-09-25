@@ -3,7 +3,7 @@
  * Handles all admin operations: Products, Categories, Orders, Blogs
  */
 
-const API_BASE = "http://localhost:8080/routes/shop";
+const API_BASE = "http://localhost:2034/routes/shop";
 
 // Global variables
 let currentUser = null;
@@ -511,7 +511,7 @@ async function loadBlogs() {
                                 <div class="col-md-2">
                                     ${
                                       blog.image
-                                        ? `<img src="http://localhost:8080/routes/uploads/blogs/${blog.image}" 
+                                        ? `<img src="http://localhost:2034/routes/uploads/blogs/${blog.image}" 
                                               class="img-fluid rounded" style="height: 80px; object-fit: cover;">`
                                         : `<div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 80px;">
                                             <i class="fas fa-image text-muted"></i>
@@ -1084,7 +1084,7 @@ function createProductGallery(images, productId) {
 
   // If only one image, show as normal single photo
   if (images.length === 1) {
-    const imageUrl = `http://localhost:8080/routes/uploads/products/${images[0]}`;
+    const imageUrl = `http://localhost:2034/routes/uploads/products/${images[0]}`;
     console.log("Single image URL:", imageUrl);
     return `<div class="single-image-container" onclick="openImageModal(${productId}, 0)">
                     <img src="${imageUrl}" 
@@ -1106,7 +1106,7 @@ function createProductGallery(images, productId) {
   let galleryHTML = '<div class="product-gallery">';
 
   displayImages.forEach((image, index) => {
-    const imageUrl = `http://localhost:8080/routes/uploads/products/${image}`;
+    const imageUrl = `http://localhost:2034/routes/uploads/products/${image}`;
     galleryHTML += `
             <div class="gallery-thumbnail" onclick="openImageModal(${productId}, ${index})">
                 <img src="${imageUrl}" alt="Product Image ${index + 1}">
@@ -1153,7 +1153,7 @@ function openImageModal(productId, startIndex = 0) {
   const totalImages = product.images.length;
 
   function updateModal() {
-    const imageUrl = `http://localhost:8080/routes/uploads/products/${product.images[currentIndex]}`;
+    const imageUrl = `http://localhost:2034/routes/uploads/products/${product.images[currentIndex]}`;
     modalImg.src = imageUrl;
     modalImg.alt = `Product Image ${currentIndex + 1}`;
     modalCounter.textContent = `${currentIndex + 1} / ${totalImages}`;

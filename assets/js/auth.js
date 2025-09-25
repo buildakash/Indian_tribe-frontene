@@ -6,7 +6,7 @@
 class AuthSystem {
   constructor() {
     // Use the same server for both frontend and backend
-    this.apiBaseUrl = "http://localhost:8080/routes/auth";
+    this.apiBaseUrl = "http://localhost:2034/api/v1/auth";
     // this.apiBaseUrl = 'http://localhost:8080/api/auth';
     this.currentUser = null;
     this.currentEmail = null; // Store email for OTP process

@@ -3,189 +3,340 @@
 ================================================================== -->
 
 <div class="breadcrumb-block style-shared">
-    <div class="breadcrumb-main bg-linear overflow-hidden">
-        <div class="container lg:pt-[134px] pt-24 pb-10 relative">
-            <div class="main-content w-full h-full flex flex-col items-center justify-center relative z-[1]">
-                <div class="text-content">
-                    <div class="heading2 text-center">Login</div>
-                    <div class="link flex items-center justify-center gap-1 caption1 mt-3">
-                        <a href="index.html">Homepage</a>
-                        <i class="ph ph-caret-right text-sm text-secondary2"></i>
-                        <div class="text-secondary2 capitalize">Login</div>
-                    </div>
-                </div>
-            </div>
+  <div class="breadcrumb-main bg-linear overflow-hidden">
+    <div class="container lg:pt-[134px] pt-24 pb-10 relative">
+      <div
+        class="main-content w-full h-full flex flex-col items-center justify-center relative z-[1]"
+      >
+        <div class="text-content">
+          <div class="heading2 text-center">Login</div>
+          <div
+            class="link flex items-center justify-center gap-1 caption1 mt-3"
+          >
+            <a href="index.html">Homepage</a>
+            <i class="ph ph-caret-right text-sm text-secondary2"></i>
+            <div class="text-secondary2 capitalize">Login</div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- =================================================================
      LOGIN & REGISTER BLOCK
 ================================================================== -->
 <div class="login-block md:py-20 py-10">
-    <div class="container">
-        <div class="content-main flex gap-y-8 max-md:flex-col">
+  <div class="container">
+    <div class="content-main flex gap-y-8 max-md:flex-col">
+      <!-- ====== LEFT COLUMN: FORMS ====== -->
+      <div
+        class="left md:w-1/2 w-full lg:pr-[60px] md:pr-[40px] md:border-r border-line"
+      >
+        <div class="heading4 mb-6">Login</div>
 
-            <!-- ====== LEFT COLUMN: FORMS ====== -->
-            <div class="left md:w-1/2 w-full lg:pr-[60px] md:pr-[40px] md:border-r border-line">
-                <div class="heading4 mb-6">Login</div>
-
-                <!-- Form 1: Login -->
-                <form id="login-form" class="login-form-container">
-                    <div class="flex flex-col gap-3">
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="login-email" class="form-label">Email Address *</label>
-                            <input class="form-input" id="login-email" type="email" placeholder="Enter your email address" autocomplete="email" required />
-                        </div>
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="login-password" class="form-label">Password *</label>
-                            <div class="relative">
-                                <input class="form-input" id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
-                                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" id="toggle-login-password" aria-label="Toggle password visibility">
-                                    <i class="ph ph-eye text-lg"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center">
-                                <div class="block-input flex items-center">
-                                    <input type="checkbox" name="remember" id="remember" class="mr-1" />
-                                    <i class="ph-fill ph-check-square icon-checkbox text-2xl"></i>
-                                </div>
-                                <label for="remember" class="pl-2 cursor-pointer text-sm">Remember me</label>
-                            </div>
-                            <a href="#" id="show-forgot-password-form" class="forgot-password-link text-sm">Forgot Password?</a>
-                        </div>
-                        <button type="submit" class="button-main w-full mt-2" id="login-submit-btn">
-                            <span class="btn-text">Login</span>
-                            <span class="btn-loading hidden">
-                                <i class="ph ph-circle-notch animate-spin mr-2"></i>
-                                Logging In...
-                            </span>
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Form 2: Forgot Password -->
-                <form id="forgot-password-form" class="login-form-container hidden">
-                    <div class="flex flex-col gap-5">
-                        <div>
-                            <div class="heading5 mb-2">Reset Password</div>
-                            <p class="text-sm text-gray-600 mb-2">Enter your email address and we'll send you a verification code to reset your password.</p>
-                        </div>
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="forgot-email" class="form-label">Email Address *</label>
-                            <input class="form-input" id="forgot-email" type="email" placeholder="Enter your email address" required />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <button type="submit" class="button-main w-full" id="forgot-password-submit-btn">
-                                <span class="btn-text">Send Reset Code</span>
-                                <span class="btn-loading hidden">
-                                    <i class="ph ph-circle-notch animate-spin mr-2"></i>
-                                    Sending...
-                                </span>
-                            </button>
-                            <button type="button" class="btn-secondary w-full" id="back-to-login-from-forgot">
-                                Back to Login
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- Form 3: OTP Verification -->
-                <form id="reset-otp-form" class="login-form-container hidden">
-                    <div class="flex flex-col gap-5">
-                        <div>
-                            <div class="heading5 mb-2">Verify Reset Code</div>
-                            <p class="text-sm text-gray-600 mb-2">We've sent a 4-digit code to your email. Please enter it below.</p>
-                        </div>
-                        <div class="otp-container" id="reset-otp-container">
-                            <div class="otp-inputs flex justify-center gap-3 mb-2">
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-1" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-2" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-3" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                                <input type="text" class="otp-input text-center text-lg w-12 h-12 border border-line rounded" id="reset-otp-input-4" maxlength="1" autocomplete="one-time-code" inputmode="numeric" />
-                            </div>
-                            <div class="otp-timer-section flex flex-col items-center mt-2">
-                                <div id="timer-display" class="timer-display text-sm">
-                                    <span id="timer-text">Resend code in </span>
-                                    <span id="timer-countdown">02:00</span>
-                                </div>
-                                <button type="button" id="resend-otp-btn" class="btn-secondary mt-2 hidden">
-                                    Resend Code
-                                </button>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <!-- <<< UPDATED: This button is now VISIBLE but will be managed by JS -->
-                            <button type="submit" class="button-main w-full" id="verify-reset-otp-btn">
-                                <span class="btn-text">Verify Code</span>
-                                <span class="btn-loading hidden">
-                                    <i class="ph ph-circle-notch animate-spin mr-2"></i>
-                                    Verifying...
-                                </span>
-                            </button>
-                            <button type="button" class="btn-secondary w-full mt-2" id="back-to-forgot-from-otp">
-                                Back
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- Form 4: Set New Password -->
-                <form id="reset-password-form" class="login-form-container hidden">
-                    <div class="flex flex-col gap-5">
-                        <div>
-                            <div class="heading5 mb-2">Set New Password</div>
-                            <p class="text-sm text-gray-600 mb-2">Please enter your new password below.</p>
-                        </div>
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="new-password" class="form-label">New Password *</label>
-                            <div class="relative">
-                                <input class="form-input" id="reset-new-password" type="password" placeholder="Enter new password" autocomplete="new-password" required />
-                                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" id="toggle-reset-password" aria-label="Toggle password visibility">
-                                    <i class="ph ph-eye text-lg"></i>
-                                </button>
-                            </div>
-                            <div id="reset-password-strength"></div>
-                        </div>
-                        <div class="form-group flex flex-col gap-1">
-                            <label for="confirm-password" class="form-label">Confirm Password *</label>
-                             <div class="relative">
-                                <input class="form-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" autocomplete="new-password" required />
-                                <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" id="toggle-reset-confirm-password" aria-label="Toggle password visibility">
-                                    <i class="ph ph-eye text-lg"></i>
-                                </button>
-                            </div>
-                            <div id="reset-confirm-password-indicator" class="text-xs mt-1"></div>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <button type="submit" class="button-main w-full" id="reset-password-submit-btn">
-                                <span class="btn-text">Reset Password</span>
-                                <span class="btn-loading hidden">
-                                    <i class="ph ph-circle-notch animate-spin mr-2"></i>
-                                    Resetting...
-                                </span>
-                            </button>
-                            <button type="button" class="btn-secondary w-full" id="back-to-forgot-password">
-                                Back
-                            </button>
-                        </div>
-                    </div>
-                </form>
+        <!-- Form 1: Login -->
+        <form id="login-form" class="login-form-container">
+          <div class="flex flex-col gap-3">
+            <div class="form-group flex flex-col gap-1">
+              <label for="login-email" class="form-label"
+                >Email Address *</label
+              >
+              <input
+                class="form-input"
+                id="login-email"
+                type="email"
+                placeholder="Enter your email address"
+                autocomplete="email"
+                value="developer.saadh@gmail.com"
+                required
+              />
             </div>
-
-            <!-- ====== RIGHT COLUMN: NEW CUSTOMER ====== -->
-            <div class="right md:w-1/2 w-full lg:pl-[60px] md:pl-[40px] flex items-center">
-                <div class="text-content">
-                    <div class="heading4">New Customer?</div>
-                    <div class="mt-2 text-secondary">Be part of our growing family of new customers! Join us today and unlock a world of exclusive benefits, offers, and personalized experiences.</div>
-                    <div class="block-button md:mt-7 mt-4">
-                        <a href="register.html" class="button-main">Register</a>
-                    </div>
+            <div class="form-group flex flex-col gap-1">
+              <label for="login-password" class="form-label">Password *</label>
+              <div class="relative">
+                <input
+                  class="form-input"
+                  id="login-password"
+                  type="password"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  value="Saadh@123"
+                  required
+                />
+                <button
+                  type="button"
+                  class="absolute right-4 top-1/2 -translate-y-1/2"
+                  id="toggle-login-password"
+                  aria-label="Toggle password visibility"
+                >
+                  <i class="ph ph-eye text-lg"></i>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center">
+                <div class="block-input flex items-center">
+                  <input
+                    type="checkbox"
+                    name="remember"
+                    id="remember"
+                    class="mr-1"
+                  />
+                  <i class="ph-fill ph-check-square icon-checkbox text-2xl"></i>
                 </div>
+                <label for="remember" class="pl-2 cursor-pointer text-sm"
+                  >Remember me</label
+                >
+              </div>
+              <a
+                href="#"
+                id="show-forgot-password-form"
+                class="forgot-password-link text-sm"
+                >Forgot Password?</a
+              >
             </div>
-            
+            <button
+              type="submit"
+              class="button-main w-full mt-2"
+              id="login-submit-btn"
+            >
+              <span class="btn-text">Login</span>
+              <span class="btn-loading hidden">
+                <i class="ph ph-circle-notch animate-spin mr-2"></i>
+                Logging In...
+              </span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Form 2: Forgot Password -->
+        <form id="forgot-password-form" class="login-form-container hidden">
+          <div class="flex flex-col gap-5">
+            <div>
+              <div class="heading5 mb-2">Reset Password</div>
+              <p class="text-sm text-gray-600 mb-2">
+                Enter your email address and we'll send you a verification code
+                to reset your password.
+              </p>
+            </div>
+            <div class="form-group flex flex-col gap-1">
+              <label for="forgot-email" class="form-label"
+                >Email Address *</label
+              >
+              <input
+                class="form-input"
+                id="forgot-email"
+                type="email"
+                placeholder="Enter your email address"
+                required
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <button
+                type="submit"
+                class="button-main w-full"
+                id="forgot-password-submit-btn"
+              >
+                <span class="btn-text">Send Reset Code</span>
+                <span class="btn-loading hidden">
+                  <i class="ph ph-circle-notch animate-spin mr-2"></i>
+                  Sending...
+                </span>
+              </button>
+              <button
+                type="button"
+                class="btn-secondary w-full"
+                id="back-to-login-from-forgot"
+              >
+                Back to Login
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Form 3: OTP Verification -->
+        <form id="reset-otp-form" class="login-form-container hidden">
+          <div class="flex flex-col gap-5">
+            <div>
+              <div class="heading5 mb-2">Verify Reset Code</div>
+              <p class="text-sm text-gray-600 mb-2">
+                We've sent a 4-digit code to your email. Please enter it below.
+              </p>
+            </div>
+            <div class="otp-container" id="reset-otp-container">
+              <div class="otp-inputs flex justify-center gap-3 mb-2">
+                <input
+                  type="text"
+                  class="otp-input text-center text-lg w-12 h-12 border border-line rounded"
+                  id="reset-otp-input-1"
+                  maxlength="1"
+                  autocomplete="one-time-code"
+                  inputmode="numeric"
+                />
+                <input
+                  type="text"
+                  class="otp-input text-center text-lg w-12 h-12 border border-line rounded"
+                  id="reset-otp-input-2"
+                  maxlength="1"
+                  autocomplete="one-time-code"
+                  inputmode="numeric"
+                />
+                <input
+                  type="text"
+                  class="otp-input text-center text-lg w-12 h-12 border border-line rounded"
+                  id="reset-otp-input-3"
+                  maxlength="1"
+                  autocomplete="one-time-code"
+                  inputmode="numeric"
+                />
+                <input
+                  type="text"
+                  class="otp-input text-center text-lg w-12 h-12 border border-line rounded"
+                  id="reset-otp-input-4"
+                  maxlength="1"
+                  autocomplete="one-time-code"
+                  inputmode="numeric"
+                />
+              </div>
+              <div class="otp-timer-section flex flex-col items-center mt-2">
+                <div id="timer-display" class="timer-display text-sm">
+                  <span id="timer-text">Resend code in </span>
+                  <span id="timer-countdown">02:00</span>
+                </div>
+                <button
+                  type="button"
+                  id="resend-otp-btn"
+                  class="btn-secondary mt-2 hidden"
+                >
+                  Resend Code
+                </button>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <!-- <<< UPDATED: This button is now VISIBLE but will be managed by JS -->
+              <button
+                type="submit"
+                class="button-main w-full"
+                id="verify-reset-otp-btn"
+              >
+                <span class="btn-text">Verify Code</span>
+                <span class="btn-loading hidden">
+                  <i class="ph ph-circle-notch animate-spin mr-2"></i>
+                  Verifying...
+                </span>
+              </button>
+              <button
+                type="button"
+                class="btn-secondary w-full mt-2"
+                id="back-to-forgot-from-otp"
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Form 4: Set New Password -->
+        <form id="reset-password-form" class="login-form-container hidden">
+          <div class="flex flex-col gap-5">
+            <div>
+              <div class="heading5 mb-2">Set New Password</div>
+              <p class="text-sm text-gray-600 mb-2">
+                Please enter your new password below.
+              </p>
+            </div>
+            <div class="form-group flex flex-col gap-1">
+              <label for="new-password" class="form-label"
+                >New Password *</label
+              >
+              <div class="relative">
+                <input
+                  class="form-input"
+                  id="reset-new-password"
+                  type="password"
+                  placeholder="Enter new password"
+                  autocomplete="new-password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="absolute right-4 top-1/2 -translate-y-1/2"
+                  id="toggle-reset-password"
+                  aria-label="Toggle password visibility"
+                >
+                  <i class="ph ph-eye text-lg"></i>
+                </button>
+              </div>
+              <div id="reset-password-strength"></div>
+            </div>
+            <div class="form-group flex flex-col gap-1">
+              <label for="confirm-password" class="form-label"
+                >Confirm Password *</label
+              >
+              <div class="relative">
+                <input
+                  class="form-input"
+                  id="reset-confirm-password"
+                  type="password"
+                  placeholder="Confirm new password"
+                  autocomplete="new-password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="absolute right-4 top-1/2 -translate-y-1/2"
+                  id="toggle-reset-confirm-password"
+                  aria-label="Toggle password visibility"
+                >
+                  <i class="ph ph-eye text-lg"></i>
+                </button>
+              </div>
+              <div
+                id="reset-confirm-password-indicator"
+                class="text-xs mt-1"
+              ></div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <button
+                type="submit"
+                class="button-main w-full"
+                id="reset-password-submit-btn"
+              >
+                <span class="btn-text">Reset Password</span>
+                <span class="btn-loading hidden">
+                  <i class="ph ph-circle-notch animate-spin mr-2"></i>
+                  Resetting...
+                </span>
+              </button>
+              <button
+                type="button"
+                class="btn-secondary w-full"
+                id="back-to-forgot-password"
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- ====== RIGHT COLUMN: NEW CUSTOMER ====== -->
+      <div
+        class="right md:w-1/2 w-full lg:pl-[60px] md:pl-[40px] flex items-center"
+      >
+        <div class="text-content">
+          <div class="heading4">New Customer?</div>
+          <div class="mt-2 text-secondary">
+            Be part of our growing family of new customers! Join us today and
+            unlock a world of exclusive benefits, offers, and personalized
+            experiences.
+          </div>
+          <div class="block-button md:mt-7 mt-4">
+            <a href="register.html" class="button-main">Register</a>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

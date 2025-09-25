@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/routes/admin/register_admin.php",
+        "http://localhost:2034/routes/admin/register_admin.php",
         {
           method: "POST",
           body: formData,

@@ -6,7 +6,7 @@
     apiBaseUrl:
       existing.apiBaseUrl ||
       window.API_BASE_URL ||
-      "http://localhost:8080/routes/auth",
+      "http://localhost:2034/api/v1/auth",
     modalDelayMs:
       typeof existing.modalDelayMs === "number" ? existing.modalDelayMs : 2000,
     // Debug and mock toggles can be overridden at runtime: window.DEBUG_AUTH / window.USE_MOCK_AUTH

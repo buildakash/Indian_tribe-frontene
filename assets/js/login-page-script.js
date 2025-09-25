@@ -11,12 +11,12 @@
     const loginForm = document.getElementById("login-form");
     if (!loginForm) return;
 
-    const API_BASE = "http://localhost:8080/routes/auth";
+    const API_BASE = "http://localhost:2034/api/v1/auth";
     const ROUTES = {
-      login: `${API_BASE}/login.php`,
-      sendResetCode: `${API_BASE}/forgot_password.php`,
-      verifyResetCode: `${API_BASE}/verify_forgot_password_otp.php`,
-      resetPassword: `${API_BASE}/reset_password.php`,
+      login: `${API_BASE}/login`,
+      sendResetCode: `${API_BASE}/forgot_password`,
+      verifyResetCode: `${API_BASE}/verify_forgot_password_otp`,
+      resetPassword: `${API_BASE}/reset_password`,
     };
 
     // ----- Forms -----
