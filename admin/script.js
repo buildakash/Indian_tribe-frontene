@@ -1023,8 +1023,23 @@ async function deleteCategory(categoryId) {
     "warning",
     async () => {
       try {
-        // Note: You might want to add a delete_category.php API endpoint
-        showToast("⚠️ Category deletion not implemented yet", "warning");
+        const formData = new FormData();
+        formData.append("delete", "1");
+        formData.append("id", categoryId);
+
+        const response = await fetch(`${API_BASE}/add_category`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showToast("✅ Category deleted successfully!", "success");
+          loadCategories();
+        } else {
+          showToast("❌ " + data.message, "error");
+        }
       } catch (error) {
         console.error("❌ Failed to delete category:", error);
         showToast("❌ Failed to delete category", "error");
