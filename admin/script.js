@@ -757,12 +757,15 @@ async function deleteProduct(productId) {
 /**
  * Edit product
  */
-function editProduct(productId) {
+async function editProduct(productId) {
   const product = products.find((p) => p.id == productId);
   if (!product) {
     showToast("❌ Product not found", "error");
     return;
   }
+
+  // Load categories for dropdown first
+  await loadCategoriesForDropdown();
 
   // Fill form with product data
   document.getElementById("prodId").value = product.id;
@@ -970,6 +973,10 @@ async function saveEdit(type) {
 
     console.log(`Sending request to: ${endpoint}`);
     console.log("Form data:", Object.fromEntries(formData));
+    console.log("Form data entries:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`  ${key}: ${value} (type: ${typeof value})`);
+    }
 
     const response = await fetch(endpoint, {
       method: "POST",
@@ -977,8 +984,22 @@ async function saveEdit(type) {
     });
 
     console.log("Response status:", response.status);
-    const data = await response.json();
-    console.log("Response data:", data);
+    console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+    
+    const responseText = await response.text();
+    console.log("Raw response text:", responseText);
+    
+    let data;
+    try {
+      data = JSON.parse(responseText);
+      console.log("Parsed response data:", data);
+    } catch (e) {
+      console.error("Failed to parse JSON response:", e);
+      console.log("Response was not valid JSON. Raw response:", responseText);
+      hideLoading(type);
+      showToast("❌ Server returned invalid response", "error");
+      return;
+    }
 
     hideLoading(type);
 
