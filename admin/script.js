@@ -3,7 +3,7 @@
  * Handles all admin operations: Products, Categories, Orders, Blogs
  */
 
-const API_BASE = "http://localhost:2034/routes/shop";
+const API_BASE = "http://localhost:2034/api/v1/shop";
 
 // Global variables
 let currentUser = null;
@@ -184,10 +184,10 @@ async function loadDashboard() {
     // Load all data in parallel
     const [productsRes, categoriesRes, ordersRes, blogsRes] = await Promise.all(
       [
-        fetch(`${API_BASE}/get_my_products.php?shop_id=${currentShop.id}`),
-        fetch(`${API_BASE}/get_categories.php?shop_id=${currentShop.id}`),
-        fetch(`${API_BASE}/get_orders.php?shop_id=${currentShop.id}`), // Use shop_id for admin orders
-        fetch(`${API_BASE}/get_blogs.php`),
+        fetch(`${API_BASE}/get_my_products?shop_id=${currentShop.id}`),
+        fetch(`${API_BASE}/get_categories?shop_id=${currentShop.id}`),
+        fetch(`${API_BASE}/get_orders?shop_id=${currentShop.id}`), // Use shop_id for admin orders
+        fetch(`${API_BASE}/get_blogs`),
       ]
     );
 
@@ -229,7 +229,7 @@ async function loadCategories() {
     showLoading("categories");
 
     const response = await fetch(
-      `${API_BASE}/get_categories.php?shop_id=${currentShop.id}`
+      `${API_BASE}/get_categories?shop_id=${currentShop.id}`
     );
     const data = await response.json();
 
@@ -286,7 +286,7 @@ async function loadProducts() {
 
     // Load products
     const response = await fetch(
-      `${API_BASE}/get_my_products.php?shop_id=${currentShop.id}`
+      `${API_BASE}/get_my_products?shop_id=${currentShop.id}`
     );
     const data = await response.json();
 
@@ -389,7 +389,7 @@ async function loadProducts() {
 async function loadCategoriesForDropdown() {
   try {
     const response = await fetch(
-      `${API_BASE}/get_categories.php?shop_id=${currentShop.id}`
+      `${API_BASE}/get_categories?shop_id=${currentShop.id}`
     );
     const data = await response.json();
 
@@ -414,7 +414,7 @@ async function loadOrders() {
     showLoading("orders");
 
     const response = await fetch(
-      `${API_BASE}/get_orders.php?shop_id=${currentShop.id}`
+      `${API_BASE}/get_orders?shop_id=${currentShop.id}`
     );
     const data = await response.json();
 
@@ -495,7 +495,7 @@ async function loadBlogs() {
   try {
     showLoading("blogs");
 
-    const response = await fetch(`${API_BASE}/get_blogs.php`);
+    const response = await fetch(`${API_BASE}/get_blogs`);
     const data = await response.json();
 
     const list = document.getElementById("blogList");
@@ -619,7 +619,7 @@ async function handleCategorySubmit(e) {
   try {
     showLoading("categories");
 
-    const response = await fetch(`${API_BASE}/add_category.php`, {
+    const response = await fetch(`${API_BASE}/add_category`, {
       method: "POST",
       body: formData,
     });
@@ -658,7 +658,7 @@ async function handleProductSubmit(e) {
   try {
     showLoading("products");
 
-    const response = await fetch(`${API_BASE}/add_product.php`, {
+    const response = await fetch(`${API_BASE}/add_product`, {
       method: "POST",
       body: formData,
     });
@@ -696,7 +696,7 @@ async function handleBlogSubmit(e) {
   try {
     showLoading("blogs");
 
-    const response = await fetch(`${API_BASE}/add_blog.php`, {
+    const response = await fetch(`${API_BASE}/add_blog`, {
       method: "POST",
       body: formData,
     });
@@ -733,7 +733,7 @@ async function deleteProduct(productId) {
         const formData = new FormData();
         formData.append("product_id", productId);
 
-        const response = await fetch(`${API_BASE}/delete_product.php`, {
+        const response = await fetch(`${API_BASE}/delete_product`, {
           method: "POST",
           body: formData,
         });
@@ -924,13 +924,13 @@ async function saveEdit(type) {
     let endpoint = "";
     switch (type) {
       case "category":
-        endpoint = `${API_BASE}/add_category.php`;
+        endpoint = `${API_BASE}/add_category`;
         break;
       case "product":
-        endpoint = `${API_BASE}/edit_product.php`;
+        endpoint = `${API_BASE}/edit_product`;
         break;
       case "blog":
-        endpoint = `${API_BASE}/add_blog.php`;
+        endpoint = `${API_BASE}/add_blog`;
         break;
     }
 
