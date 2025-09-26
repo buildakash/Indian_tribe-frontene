@@ -18,14 +18,19 @@
     padding-bottom: 1rem;
   }
 
-  .user-actions .button-main {
-    transition: all 0.3s ease;
-  }
+.user-actions .button-main {
+  transition: all 0.3s ease;
+  margin-bottom: 12px !important;
+}
 
-  .user-actions .button-main:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
+.user-actions .button-main:last-child {
+  margin-bottom: 0 !important;
+}
+
+.user-actions .button-main:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
   #logoutBtn:hover {
     background-color: #dc2626 !important;
