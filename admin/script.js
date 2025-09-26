@@ -1119,13 +1119,34 @@ function viewOrder(orderId) {
 /**
  * Delete blog
  */
-function deleteBlog(blogId) {
+async function deleteBlog(blogId) {
   showPopup(
     "Delete Blog",
     "Are you sure you want to delete this blog post? This action cannot be undone.",
     "warning",
-    () => {
-      showToast("⚠️ Blog deletion not implemented yet", "warning");
+    async () => {
+      try {
+        const formData = new FormData();
+        formData.append("delete", "1");
+        formData.append("id", blogId);
+
+        const response = await fetch(`${API_BASE}/add_blog`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showToast("✅ Blog deleted successfully!", "success");
+          loadBlogs();
+        } else {
+          showToast("❌ " + data.message, "error");
+        }
+      } catch (error) {
+        console.error("❌ Failed to delete blog:", error);
+        showToast("❌ Failed to delete blog", "error");
+      }
     }
   );
 }
