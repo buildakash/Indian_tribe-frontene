@@ -81,14 +81,14 @@ if (!productContainer || !productList || !listPagination) {
     });
   }
 
-   // Main Function to Fetch and Initialize Products
-   function fetchProducts() {
-     // Get shop_id from localStorage like admin page does
-     const shopId = localStorage.getItem("shop_id") || "1"; // fallback to 1 if not set
-     console.log("Using shop_id:", shopId);
-     
-     // Fetch real products from API - use the same endpoint as admin page
-     fetch(`http://localhost:2034/api/v1/shop/get_my_products?shop_id=${shopId}`)
+  // Main Function to Fetch and Initialize Products
+  function fetchProducts() {
+    // Get shop_id from localStorage like admin page does
+    const shopId = localStorage.getItem("shop_id") || "8"; // fallback to 1 if not set
+    console.log("Using shop_id:", shopId);
+
+    // Fetch real products from API - use the same endpoint as admin page
+    fetch(`http://localhost:2034/api/v1/shop/get_my_products?shop_id=${shopId}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -97,73 +97,86 @@ if (!productContainer || !productList || !listPagination) {
         }
         return response.json();
       })
-       .then((data) => {
-         console.log("API Response:", data);
-         if (data.success && data.products) {
-           console.log("Products found:", data.products.length);
-           // Transform API data to match expected format
-           productsData = data.products.map((product) => ({
-             id: product.id,
-             name: product.name,
-             price: parseFloat(product.price),
-             originPrice: parseFloat(product.price) * 1.2, // Mock original price
-             quantity: parseInt(product.stock) + Math.floor(Math.random() * 20), // Mock total quantity
-             sold: Math.floor(Math.random() * parseInt(product.stock)), // Mock sold quantity
-             new: product.is_new_arrival === 1,
-             sale: Math.random() > 0.7, // Random sale status
-             category: product.category_name || "Uncategorized",
-             thumbImage: product.images && product.images.length > 0
-               ? product.images.map(img => `http://localhost:2034/api/v1/uploads/products/${img}`)
-               : ["http://localhost:2034/api/v1/uploads/products/default-product.jpg"],
-           }));
-           initializeShop();
-         } else {
-           console.error("API Error:", data);
-           throw new Error(data.message || "Failed to fetch products");
-         }
-       })
-       .catch((error) => {
-         console.error("Error fetching products:", error);
-         
-         // Try fallback shop_id if the first one fails
-         if (shopId !== "1") {
-           console.log("Trying fallback shop_id=1");
-           fetch("http://localhost:2034/api/v1/shop/get_my_products?shop_id=1")
-             .then(response => response.json())
-             .then(data => {
-               console.log("Fallback API Response:", data);
-               if (data.success && data.products) {
-                 console.log("Fallback products found:", data.products.length);
-                 // Transform API data to match expected format
-                 productsData = data.products.map((product) => ({
-                   id: product.id,
-                   name: product.name,
-                   price: parseFloat(product.price),
-                   originPrice: parseFloat(product.price) * 1.2,
-                   quantity: parseInt(product.stock) + Math.floor(Math.random() * 20),
-                   sold: Math.floor(Math.random() * parseInt(product.stock)),
-                   new: product.is_new_arrival === 1,
-                   sale: Math.random() > 0.7,
-                   category: product.category_name || "Uncategorized",
-                   thumbImage: product.images && product.images.length > 0
-                     ? product.images.map(img => `http://localhost:2034/api/v1/uploads/products/${img}`)
-                     : ["http://localhost:2034/api/v1/uploads/products/default-product.jpg"],
-                 }));
-                 initializeShop();
-               } else {
-                 throw new Error(data.message || "Fallback also failed");
-               }
-             })
-             .catch(fallbackError => {
-               console.error("Fallback also failed:", fallbackError);
-               if (productList)
-                 productList.innerHTML = `<p class="col-span-full text-center text-red-500">No products found. Please check if products exist in the database.</p>`;
-             });
-         } else {
-           if (productList)
-             productList.innerHTML = `<p class="col-span-full text-center text-red-500">${error.message}</p>`;
-         }
-       });
+      .then((data) => {
+        console.log("API Response:", data);
+        if (data.success && data.products) {
+          console.log("Products found:", data.products.length);
+          // Transform API data to match expected format
+          productsData = data.products.map((product) => ({
+            id: product.id,
+            name: product.name,
+            price: parseFloat(product.price),
+            originPrice: parseFloat(product.price) * 1.2, // Mock original price
+            quantity: parseInt(product.stock) + Math.floor(Math.random() * 20), // Mock total quantity
+            sold: Math.floor(Math.random() * parseInt(product.stock)), // Mock sold quantity
+            new: product.is_new_arrival === 1,
+            sale: Math.random() > 0.7, // Random sale status
+            category: product.category_name || "Uncategorized",
+            thumbImage:
+              product.images && product.images.length > 0
+                ? product.images.map(
+                    (img) =>
+                      `http://localhost:2034/api/v1/uploads/products/${img}`
+                  )
+                : [
+                    "http://localhost:2034/api/v1/uploads/products/default-product.jpg",
+                  ],
+          }));
+          initializeShop();
+        } else {
+          console.error("API Error:", data);
+          throw new Error(data.message || "Failed to fetch products");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+
+        // Try fallback shop_id if the first one fails
+        if (shopId !== "1") {
+          console.log("Trying fallback shop_id=1");
+          fetch("http://localhost:2034/api/v1/shop/get_my_products?shop_id=1")
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Fallback API Response:", data);
+              if (data.success && data.products) {
+                console.log("Fallback products found:", data.products.length);
+                // Transform API data to match expected format
+                productsData = data.products.map((product) => ({
+                  id: product.id,
+                  name: product.name,
+                  price: parseFloat(product.price),
+                  originPrice: parseFloat(product.price) * 1.2,
+                  quantity:
+                    parseInt(product.stock) + Math.floor(Math.random() * 20),
+                  sold: Math.floor(Math.random() * parseInt(product.stock)),
+                  new: product.is_new_arrival === 1,
+                  sale: Math.random() > 0.7,
+                  category: product.category_name || "Uncategorized",
+                  thumbImage:
+                    product.images && product.images.length > 0
+                      ? product.images.map(
+                          (img) =>
+                            `http://localhost:2034/api/v1/uploads/products/${img}`
+                        )
+                      : [
+                          "http://localhost:2034/api/v1/uploads/products/default-product.jpg",
+                        ],
+                }));
+                initializeShop();
+              } else {
+                throw new Error(data.message || "Fallback also failed");
+              }
+            })
+            .catch((fallbackError) => {
+              console.error("Fallback also failed:", fallbackError);
+              if (productList)
+                productList.innerHTML = `<p class="col-span-full text-center text-red-500">No products found. Please check if products exist in the database.</p>`;
+            });
+        } else {
+          if (productList)
+            productList.innerHTML = `<p class="col-span-full text-center text-red-500">${error.message}</p>`;
+        }
+      });
   }
 
   // Function to set up all event listeners and initial render
