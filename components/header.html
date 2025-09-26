@@ -1,3 +1,94 @@
+<style>
+  /* Header Profile Styles */
+  .login-popup {
+    z-index: 9999;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    min-width: 320px;
+    margin-top: 10px;
+    border-radius: 12px;
+  }
+
+  .user-info {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+  }
+
+  .user-actions .button-main {
+    transition: all 0.3s ease;
+  }
+
+  .user-actions .button-main:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  #logoutBtn:hover {
+    background-color: #dc2626 !important;
+    border-color: #dc2626 !important;
+  }
+
+  /* Toast notification styles */
+  .fixed {
+    position: fixed;
+  }
+
+  .top-4 {
+    top: 1rem;
+  }
+
+  .right-4 {
+    right: 1rem;
+  }
+
+  .bg-green-500 {
+    background-color: #10b981;
+  }
+
+  .text-white {
+    color: white;
+  }
+
+  .px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .z-50 {
+    z-index: 50;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .gap-2 {
+    gap: 0.5rem;
+  }
+</style>
+
 <div id="header" class="relative w-full">
   <div
     class="header-menu style-one absolute top-0 left-0 right-0 w-full md:h-[74px] h-[56px] bg-transparent"

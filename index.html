@@ -48,6 +48,7 @@
     <!-- User Session Management -->
     <script src="./assets/js/user-session-manager.js"></script>
     <script src="./assets/js/user-homepage-manager.js"></script>
+    <script src="./assets/js/header-profile-manager.js"></script>
     
     <!-- SCRIPT TO LOAD COMPONENTS -->
    <script>
@@ -113,6 +114,36 @@
         if (typeof window.initUI === "function") {
           window.initUI(); // <- will create your Swiper instances, bind events, etc.
         }
+
+        // 5) Initialize header profile manager
+        if (window.headerProfileManager) {
+          console.log('🚀 Initializing header profile manager from index.html');
+          window.headerProfileManager.init();
+        } else {
+          console.error('❌ Header profile manager not found!');
+        }
+
+        // 6) Dispatch components loaded event
+        document.dispatchEvent(new CustomEvent('components:loaded'));
+
+        // 7) Additional initialization after a delay to ensure everything is ready
+        setTimeout(() => {
+          console.log('🔄 Additional initialization check...');
+          if (window.headerProfileManager) {
+            console.log('🔄 Re-initializing header profile manager...');
+            window.headerProfileManager.init();
+          }
+        }, 2000);
+
+        // 8) Add global test function for debugging
+        window.testHeaderProfile = function() {
+          console.log('🧪 Testing header profile manager...');
+          if (window.headerProfileManager) {
+            window.headerProfileManager.forceUpdateModal();
+          } else {
+            console.error('❌ Header profile manager not available');
+          }
+        };
       })
       .catch((err) => console.error("Boot error:", err));
   });
