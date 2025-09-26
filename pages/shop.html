@@ -120,7 +120,16 @@
                                 }
                             }, 2000);
 
-                            // 9) Add global test function for debugging
+                            // 9) Fix social icon paths for shop page
+                            const socialIcons = document.querySelectorAll('.social-icon');
+                            socialIcons.forEach(icon => {
+                                const currentSrc = icon.src;
+                                if (currentSrc.includes('/pages/assets/')) {
+                                    icon.src = currentSrc.replace('/pages/assets/', '/assets/');
+                                }
+                            });
+
+                            // 10) Add global test function for debugging
                             window.testHeaderProfile = function() {
                                 console.log('🧪 Testing header profile manager...');
                                 if (window.headerProfileManager) {

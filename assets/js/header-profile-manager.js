@@ -431,6 +431,13 @@ class HeaderProfileManager {
             // Close popup
             this.closePopup();
             
+            // Redirect to home page if currently on shop page
+            const currentPath = window.location.pathname;
+            if (currentPath.includes('/pages/')) {
+                console.log('🏠 Redirecting to home page after logout...');
+                window.location.href = this.getCorrectPath('index.html');
+            }
+            
             console.log('✅ Logout completed');
         } else {
             console.log('❌ Logout cancelled');
