@@ -38,7 +38,8 @@ class UserHomepageManager {
         if (this.isLoggedIn && this.currentUser) {
             this.showLoggedInExperience();
         } else {
-            this.showLoginPopup();
+            // Login popup removed as requested
+            // this.showLoginPopup();
         }
     }
 
