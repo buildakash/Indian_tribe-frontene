@@ -170,6 +170,20 @@ class HeaderProfileManager {
     }
 
     /**
+     * Get correct path for navigation links based on current page
+     */
+    getCorrectPath(filename) {
+        const currentPath = window.location.pathname;
+        const isInPagesFolder = currentPath.includes('/pages/');
+        
+        if (isInPagesFolder) {
+            return `../${filename}`;
+        } else {
+            return filename;
+        }
+    }
+
+    /**
      * Show login profile (not logged in)
      */
     showLoginProfile() {
@@ -182,12 +196,12 @@ class HeaderProfileManager {
 
         // Reset to original login content
         const loginContent = `
-            <a href="login.html" class="button-main w-full text-center">Login</a>
+            <a href="${this.getCorrectPath('login.html')}" class="button-main w-full text-center">Login</a>
             <div class="text-secondary text-center mt-3 pb-4">
                 Don't have an account?
-                <a href="register.html" class="text-black pl-1 hover:underline">Register</a>
+                <a href="${this.getCorrectPath('register.html')}" class="text-black pl-1 hover:underline">Register</a>
             </div>
-            <a href="my-account.html" class="button-main bg-white text-black border border-black w-full text-center">Dashboard</a>
+            <a href="${this.getCorrectPath('my-account.html')}" class="button-main bg-white text-black border border-black w-full text-center">Dashboard</a>
             <div class="bottom mt-4 pt-4 border-t border-line"></div>
             <a href="#!" class="body1 hover:underline">Support</a>
         `;
@@ -234,8 +248,8 @@ class HeaderProfileManager {
             </div>
             
             <div class="user-actions">
-                <a href="my-account.html" class="button-main w-full text-center mb-3">My Account</a>
-                <a href="orders.html" class="button-main bg-white text-black border border-black w-full text-center mb-3">My Orders</a>
+                <a href="${this.getCorrectPath('my-account.html')}" class="button-main w-full text-center mb-3">My Account</a>
+                <a href="${this.getCorrectPath('orders.html')}" class="button-main bg-white text-black border border-black w-full text-center mb-3">My Orders</a>
                 <button class="button-main bg-red-500 text-white border border-red-500 w-full text-center" id="logoutBtn">
                     <i class="ph-bold ph-sign-out me-2"></i>
                     Logout
